@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>利根川 水位・ダム速報 | みなかみラフティング</title>
+  
+  <!-- iOS PWA & Mobile Web App Settings for iPhone 17 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="利根川水位">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="theme-color" content="#0a1128">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  
+  <!-- Font & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <div id="app" class="app-container">
+    <!-- Header (Dynamic Island & Notch safe) -->
+    <header class="app-header">
+      <div class="header-main">
+        <div class="logo-area">
+          <div class="rafting-badge">RAFTING SPEED</div>
+          <h1>利根川 水位・ダム速報</h1>
+        </div>
+        <button id="btn-refresh" class="refresh-btn" title="最新データを取得">
+          <svg class="refresh-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+          <span class="btn-text">更新</span>
+        </button>
+      </div>
+
+      <!-- Live Status Bar -->
+      <div class="status-bar">
+        <div class="status-item">
+          <span class="status-dot"></span>
+          <span class="status-label">実測:</span>
+          <span id="latest-obs-time" class="status-val">--/-- --:--</span>
+        </div>
+        <div class="status-item countdown-box">
+          <span class="status-label">次更新:</span>
+          <span id="countdown-timer" class="status-val countdown">10:00</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+
+      <!-- ================= TAB 1: メイン & 10分タイムライン ================= -->
+      <section id="tab-main" class="tab-content active">
+        
+        <!-- Key Metrics Highlights (湯原水位計 × 藤原ダム) -->
+        <div class="spotlight-grid">
+          <!-- 湯原水位計 Card -->
+          <div class="spotlight-card main-yubara">
+            <div class="card-tag">MAIN STATION</div>
+            <div class="card-header-row">
+              <div>
+                <h2>湯原 水位計</h2>
+                <span class="river-name">利根川（みなかみ町湯原）</span>
+              </div>
+              <div id="yubara-trend-badge" class="trend-badge trend-flat">
+                <span class="trend-arrow">→</span>
+                <span class="trend-text">安定</span>
+              </div>
+            </div>
+            
+            <div class="metric-hero">
+              <div class="hero-val-box">
+                <span class="hero-label">現在水位</span>
+                <div class="hero-value-wrap">
+                  <span id="yubara-current-stg" class="hero-num">--.--</span>
+                  <span class="hero-unit">m</span>
+                </div>
+              </div>
+              <div class="hero-sub-stats">
+                <div class="sub-stat">
+                  <span class="sub-label">10分変化</span>
+                  <span id="yubara-10m-chg" class="sub-val">--</span>
+                </div>
+                <div class="sub-stat">
+                  <span class="sub-label">1時間変化</span>
+                  <span id="yubara-1h-chg" class="sub-val">--</span>
+                </div>
+                <div class="sub-stat">
+                  <span class="sub-label">標高水位</span>
+                  <span id="yubara-stg-hght" class="sub-val">-- m</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 藤原ダム Card -->
+          <div class="spotlight-card main-fujiwara">
+            <div class="card-tag">MAIN DAM</div>
+            <div class="card-header-row">
+              <div>
+                <h2>藤原ダム</h2>
+                <span class="river-name">利根川（みなかみ町夜後）</span>
+              </div>
+              <div class="storage-badge">
+                <span>貯水率: </span>
+                <strong id="fujiwara-storage-rate">--%</strong>
+              </div>
+            </div>
+
+            <div class="dam-metrics-row">
+              <div class="dam-stat-box discharge-box">
+                <span class="stat-label">全放流量 (出水)</span>
+                <div class="stat-num-wrap">
+                  <span id="fujiwara-current-disch" class="stat-num highlight-num">--.--</span>
+                  <span class="stat-unit">m³/s</span>
+                </div>
+              </div>
+              <div class="dam-stat-box inflow-box">
+                <span class="stat-label">全流入量 (入水)</span>
+                <div class="stat-num-wrap">
+                  <span id="fujiwara-current-inflow" class="stat-num">--.--</span>
+                  <span class="stat-unit">m³/s</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="dam-sub-info">
+              <span>貯水位: <strong id="fujiwara-storage-lvl">-- m</strong></span>
+              <span>湯原雨量: <strong id="yubara-current-rain">-- mm</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: 10分刻み実績タイムライン (湯原水位 × 藤原放流 × 雨量) -->
+        <div class="timeline-section">
+          <div class="timeline-header">
+            <div>
+              <h3>⏱️ 10分刻み 実績タイムライン</h3>
+              <p class="timeline-sub">湯原水位・藤原放流・雨量を同タイミングで比較（スクロールして過去確認）</p>
+            </div>
+            <div class="table-legend">
+              <span class="legend-chip stg-chip">水位(m)</span>
+              <span class="legend-chip disch-chip">放流(m³/s)</span>
+              <span class="legend-chip rain-chip">雨量(mm)</span>
+            </div>
+          </div>
+
+          <div class="table-scroll-container">
+            <table class="timeline-table">
+              <thead>
+                <tr>
+                  <th class="col-time">時刻</th>
+                  <th class="col-stg">湯原水位<br><span class="th-unit">(m)</span></th>
+                  <th class="col-chg">10分変化<br><span class="th-unit">(m)</span></th>
+                  <th class="col-disch">藤原放流<br><span class="th-unit">(m³/s)</span></th>
+                  <th class="col-inflow">藤原流入<br><span class="th-unit">(m³/s)</span></th>
+                  <th class="col-rain">雨量<br><span class="th-unit">(mm)</span></th>
+                  <th class="col-storage">貯水率<br><span class="th-unit">(%)</span></th>
+                </tr>
+              </thead>
+              <tbody id="timeline-tbody">
+                <tr>
+                  <td colspan="7" class="loading-cell">
+                    <div class="spinner"></div> データを読み込み中...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================= TAB 2: 河川水位一覧 ================= -->
+      <section id="tab-stg" class="tab-content">
+        <div class="section-title-wrap">
+          <h3>🌊 利根川水系 水位観測所一覧</h3>
+          <p>ラフティング活動エリアの4大水位計（10分更新）</p>
+        </div>
+        <div class="station-cards-grid" id="stg-cards-container">
+          <!-- JSで動的生成 -->
+        </div>
+      </section>
+
+      <!-- ================= TAB 3: ダム諸量一覧 ================= -->
+      <section id="tab-dam" class="tab-content">
+        <div class="section-title-wrap">
+          <h3>🛡️ 上流水系 4ダム諸量一覧</h3>
+          <p>藤原・奈良俣・矢木沢・相俣ダムの全流入量・全放流量・貯水率</p>
+        </div>
+        <div class="station-cards-grid" id="dam-cards-container">
+          <!-- JSで動的生成 -->
+        </div>
+      </section>
+
+      <!-- ================= TAB 4: 推移グラフ ================= -->
+      <section id="tab-chart" class="tab-content">
+        <div class="section-title-wrap">
+          <h3>📈 過去推移チャート（直近8時間）</h3>
+          <p>水位とダム放流量の相関・トレンドグラフ</p>
+        </div>
+
+        <div class="chart-container-card">
+          <h4>湯原水位 & 藤原ダム放流量 推移</h4>
+          <div class="chart-wrapper">
+            <canvas id="chart-main-combined"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-container-card">
+          <h4>4大水位観測所 水位推移比較 (m)</h4>
+          <div class="chart-wrapper">
+            <canvas id="chart-stg-all"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-container-card">
+          <h4>4ダム 放流量推移比較 (m³/s)</h4>
+          <div class="chart-wrapper">
+            <canvas id="chart-dam-disch"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB 5: 気象・雨量 ================= -->
+      <section id="tab-weather" class="tab-content">
+        <div class="section-title-wrap">
+          <h3>⛅ みなかみ町 気象・流域雨量</h3>
+          <p>現地の現在天気・気温・降水予報および観測所雨量</p>
+        </div>
+
+        <!-- Current Weather Card -->
+        <div id="weather-current-card" class="weather-hero-card">
+          <!-- JSで生成 -->
+        </div>
+
+        <!-- 24h Hourly Forecast Table -->
+        <div class="forecast-card">
+          <h4>📅 1時間ごとの天気・降水確率予報</h4>
+          <div class="hourly-forecast-scroll" id="hourly-forecast-container">
+            <!-- JSで生成 -->
+          </div>
+        </div>
+
+        <!-- Rain Stations Grid -->
+        <div class="rain-stations-card">
+          <h4>🌧️ 周辺雨量観測所 実測値</h4>
+          <div class="rain-grid" id="rain-stations-container">
+            <!-- JSで生成 -->
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar (iOS Tab Bar for iPhone 17) -->
+    <nav class="bottom-nav-bar">
+      <button class="bottom-tab-btn active" data-tab="tab-main">
+        <span class="tab-icon">🌊</span>
+        <span class="tab-label">メイン</span>
+      </button>
+      <button class="bottom-tab-btn" data-tab="tab-stg">
+        <span class="tab-icon">📊</span>
+        <span class="tab-label">水位</span>
+      </button>
+      <button class="bottom-tab-btn" data-tab="tab-dam">
+        <span class="tab-icon">🛡️</span>
+        <span class="tab-label">ダム</span>
+      </button>
+      <button class="bottom-tab-btn" data-tab="tab-chart">
+        <span class="tab-icon">📈</span>
+        <span class="tab-label">グラフ</span>
+      </button>
+      <button class="bottom-tab-btn" data-tab="tab-weather">
+        <span class="tab-icon">⛅</span>
+        <span class="tab-label">天気</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="./js/app.js"></script>
+</body>
+</html>
