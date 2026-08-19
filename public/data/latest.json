@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-19 22:44:10",
+  "updated_at": "2026-08-19 22:52:07",
   "latest_obs_time": "2026/08/19 22:40",
   "time_path": "20260819/2240/",
   "stations": {
@@ -7791,7 +7791,7 @@
   "weather": {
     "latitude": 36.75,
     "longitude": 139.0,
-    "generationtime_ms": 0.24628639221191406,
+    "generationtime_ms": 1.3626813888549805,
     "utc_offset_seconds": 32400,
     "timezone": "Asia/Tokyo",
     "timezone_abbreviation": "GMT+9",
@@ -7807,14 +7807,14 @@
       "wind_speed_10m": "km/h"
     },
     "current": {
-      "time": "2026-08-19T22:30",
+      "time": "2026-08-19T22:45",
       "interval": 900,
-      "temperature_2m": 22.8,
-      "relative_humidity_2m": 90,
-      "apparent_temperature": 26.9,
+      "temperature_2m": 22.7,
+      "relative_humidity_2m": 91,
+      "apparent_temperature": 26.8,
       "precipitation": 0.0,
       "weather_code": 1,
-      "wind_speed_10m": 1.9
+      "wind_speed_10m": 2.5
     },
     "hourly_units": {
       "time": "iso8601",

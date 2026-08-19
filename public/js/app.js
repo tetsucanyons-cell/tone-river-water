@@ -1,5 +1,5 @@
 /**
- * 利根川 水位・ダム速報 JavaScript (iPhone 17 & GitHub Pages 対応版)
+ * 利根川 水位・ダム速報 JavaScript (iPhone 17 超高速・完全最適化版)
  * リアルタイム10分データ取得、タイムライン描画、Chart.js描画、タブ制御
  */
 
@@ -71,7 +71,7 @@ function initRefreshButton() {
   btn.addEventListener("click", () => {
     btn.classList.add("rotating");
     loadData(() => {
-      setTimeout(() => btn.classList.remove("rotating"), 600);
+      setTimeout(() => btn.classList.remove("rotating"), 500);
     });
   });
 }
@@ -113,35 +113,38 @@ function startCountdownTimer() {
   countdownInterval = setInterval(updateTimer, 1000);
 }
 
-/* ================= データ読み込み (API優先 & static data/latest.json フォールバック) ================= */
+/* ================= 超高速データ読み込み (待機ゼロ秒最適化) ================= */
 async function loadData(callback) {
-  // 1. ローカル / バックエンドAPI (/api/data)
+  const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+  
+  // GitHub Pages または静的環境の場合は直接 ./data/latest.json を即時読み込み（タイムアウト待機ゼロ）
+  const targetUrl = isLocal ? "/api/data?t=" + Date.now() : "./data/latest.json?t=" + Date.now();
+
   try {
-    const response = await fetch("/api/data?t=" + Date.now(), { cache: "no-store" });
+    const response = await fetch(targetUrl, { cache: "no-store" });
     if (response.ok) {
       const json = await response.json();
-      if (json && json.main_combined_timeline && json.main_combined_timeline.length > 0) {
+      if (json) {
         appData = json;
         renderDashboard(appData);
         if (callback) callback();
         return;
       }
     }
-  } catch (e) {
-    // APIなし（GitHub Pagesなど）
+  } catch (err) {
+    console.warn("Primary fetch failed, trying fallback:", err);
   }
 
-  // 2. GitHub Pages配信の data/latest.json
+  // フォールバック
   try {
-    const response2 = await fetch("./data/latest.json?t=" + Date.now(), { cache: "no-store" });
+    const altUrl = isLocal ? "./data/latest.json?t=" + Date.now() : "/api/data?t=" + Date.now();
+    const response2 = await fetch(altUrl, { cache: "no-store" });
     if (response2.ok) {
       appData = await response2.json();
       renderDashboard(appData);
-      if (callback) callback();
-      return;
     }
-  } catch (err) {
-    console.error("Failed to load static latest.json:", err);
+  } catch (e) {
+    console.error("All data fetch attempts failed:", e);
   }
 
   if (callback) callback();
@@ -209,7 +212,7 @@ function renderSpotlights(data) {
     trendBadge.innerHTML = '<span class="trend-arrow">→</span><span class="trend-text">安定</span>';
   }
 
-  // 藤原ダム
+  // 藤原ダム 放流量 & 流入量
   const dischVal = fujiwaraCur.allDisch !== undefined && fujiwaraCur.allDisch !== null ? Number(fujiwaraCur.allDisch).toFixed(2) : "--.--";
   document.getElementById("fujiwara-current-disch").textContent = dischVal;
 
@@ -226,7 +229,7 @@ function renderSpotlights(data) {
   document.getElementById("yubara-current-rain").textContent = `${rnVal} mm`;
 }
 
-/* ================= 10分刻み実績タイムライン (湯原水位 × 藤原放流 × 雨量) ================= */
+/* ================= 10分刻み実績タイムライン (湯原水位 × 藤原放流 × 流入 × 雨量) ================= */
 function renderCombinedTimeline(timeline) {
   const tbody = document.getElementById("timeline-tbody");
   if (!tbody) return;
@@ -274,7 +277,7 @@ function renderCombinedTimeline(timeline) {
   tbody.innerHTML = html;
 }
 
-/* ================= 水位観測所一覧 (4地点) ================= */
+/* ================= 水位観測所一覧 (4地点: 湯原・月夜野橋・小袖橋・湯宿) ================= */
 function renderStgCards(stgObj) {
   const container = document.getElementById("stg-cards-container");
   if (!container || !stgObj) return;
@@ -315,7 +318,7 @@ function renderStgCards(stgObj) {
         <div class="card-primary-stat">
           <span class="hero-label">現在水位</span>
           <div class="hero-value-wrap" style="margin:0;">
-            <span class="hero-num" style="font-size:1.8rem;">${stgVal}</span>
+            <span class="hero-num" style="font-size:1.85rem;">${stgVal}</span>
             <span class="hero-unit">m</span>
           </div>
         </div>
@@ -345,7 +348,7 @@ function renderStgCards(stgObj) {
   container.innerHTML = html;
 }
 
-/* ================= ダム諸量一覧 (4ダム) ================= */
+/* ================= ダム諸量一覧 (4ダム: 流入量・放流量・貯水率) ================= */
 function renderDamCards(damObj) {
   const container = document.getElementById("dam-cards-container");
   if (!container || !damObj) return;
@@ -375,16 +378,16 @@ function renderDamCards(damObj) {
 
         <div class="dam-metrics-row">
           <div class="dam-stat-box discharge-box">
-            <span class="stat-label">全放流量</span>
+            <span class="stat-label">全放流量 (出水)</span>
             <div class="stat-num-wrap">
               <span class="stat-num highlight-num" style="font-size:1.35rem;">${dischVal}</span>
               <span class="stat-unit">m³/s</span>
             </div>
           </div>
           <div class="dam-stat-box inflow-box">
-            <span class="stat-label">全流入量</span>
+            <span class="stat-label">全流入量 (入水)</span>
             <div class="stat-num-wrap">
-              <span class="stat-num" style="font-size:1.35rem;">${inflowVal}</span>
+              <span class="stat-num" style="font-size:1.35rem; color:#38bdf8;">${inflowVal}</span>
               <span class="stat-unit">m³/s</span>
             </div>
           </div>
@@ -404,7 +407,7 @@ function renderDamCards(damObj) {
             <span class="detail-value">${obsTime}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">管理コード</span>
+            <span class="detail-label">ダム管理コード</span>
             <span class="detail-value" style="font-size:0.72rem;color:var(--text-muted);">${dam.keyCd}</span>
           </div>
         </div>
@@ -430,6 +433,7 @@ function renderCharts(data) {
 
     const stgData = reversed.map(r => r.stg);
     const dischData = reversed.map(r => r.damDischarge);
+    const inflowData = reversed.map(r => r.damInflow);
 
     charts.main = new Chart(ctxMain, {
       type: "line",
@@ -459,6 +463,15 @@ function renderCharts(data) {
             tension: 0.2,
             pointRadius: 1,
             pointHoverRadius: 5
+          },
+          {
+            label: "藤原 流入量 (m³/s)",
+            data: inflowData,
+            borderColor: "#06b6d4",
+            borderWidth: 1.5,
+            yAxisID: "y-dam",
+            tension: 0.2,
+            pointRadius: 0
           }
         ]
       },
@@ -487,14 +500,14 @@ function renderCharts(data) {
             position: "right",
             grid: { drawOnChartArea: false },
             ticks: { color: "#fbbf24", font: { size: 10 } },
-            title: { display: true, text: "放流 (m³/s)", color: "#fbbf24", font: { size: 10 } }
+            title: { display: true, text: "流量 (m³/s)", color: "#fbbf24", font: { size: 10 } }
           }
         }
       }
     });
   }
 
-  // 2. 4大水位計 比較グラフ
+  // 2. 4大水位計 比較グラフ (湯原・月夜野・小袖・湯宿)
   const ctxStgAll = document.getElementById("chart-stg-all");
   if (ctxStgAll && data.stations.stg) {
     if (charts.stgAll) charts.stgAll.destroy();
