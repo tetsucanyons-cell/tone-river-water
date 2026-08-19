@@ -1,0 +1,38 @@
+name: Update River & Dam Data
+
+on:
+  schedule:
+    # 10分おきに自動更新 (UTC: */10 * * * *)
+    - cron: '*/10 * * * *'
+  workflow_dispatch: # 手動実行可能
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Fetch Latest River and Dam Data
+        run: |
+          python fetch_data.py
+
+      - name: Commit and Push Updated Data
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action Bot"
+          git add data/latest.json public/data/latest.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update river data [skip ci]" && git push)

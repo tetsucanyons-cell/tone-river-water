@@ -7,27 +7,6 @@ let appData = null;
 let charts = {};
 let countdownInterval = null;
 
-// 観測所定義
-const STATIONS_DEF = {
-  stg: {
-    yubara: { name: "湯原（利根川）", keyCd: "2128900400012", isMain: true, river: "利根川" },
-    tsukiyono: { name: "月夜野橋（利根川）", keyCd: "0256100400044", isMain: false, river: "利根川" },
-    kosode: { name: "小袖橋/小出（赤谷川）", keyCd: "2128900400009", isMain: false, river: "赤谷川" },
-    yujuku: { name: "湯宿（赤谷川）", keyCd: "2128900400070", isMain: false, river: "赤谷川" },
-  },
-  dam: {
-    fujiwara: { name: "藤原ダム", keyCd: "2128900700003", isMain: true, river: "利根川" },
-    naramata: { name: "奈良俣ダム", keyCd: "2128900700002", isMain: false, river: "楢俣川" },
-    yagisawa: { name: "矢木沢ダム", keyCd: "2128900700001", isMain: false, river: "利根川" },
-    aimata: { name: "相俣ダム", keyCd: "2128900700004", isMain: false, river: "赤谷川" },
-  },
-  rain: {
-    yubara_rn: { name: "湯原雨量", keyCd: "2128900100036", isMain: true },
-    fujiwara_rn: { name: "藤原雨量", keyCd: "2128900100033", isMain: false },
-    aimata_rn: { name: "相俣雨量", keyCd: "2128900100014", isMain: false },
-  }
-};
-
 // 天気コード (WMO Weather codes)
 const WMO_WEATHER_MAP = {
   0: { text: "快晴", icon: "☀️" },
@@ -134,155 +113,38 @@ function startCountdownTimer() {
   countdownInterval = setInterval(updateTimer, 1000);
 }
 
-/* ================= データ読み込み (API優先 ＆ スタンドアロン・フォールバック) ================= */
+/* ================= データ読み込み (API優先 & static data/latest.json フォールバック) ================= */
 async function loadData(callback) {
+  // 1. ローカル / バックエンドAPI (/api/data)
   try {
-    // 1. ローカル / バックエンドAPIを試行
-    const response = await fetch("/api/data", { cache: "no-store" });
+    const response = await fetch("/api/data?t=" + Date.now(), { cache: "no-store" });
     if (response.ok) {
-      appData = await response.json();
+      const json = await response.json();
+      if (json && json.main_combined_timeline && json.main_combined_timeline.length > 0) {
+        appData = json;
+        renderDashboard(appData);
+        if (callback) callback();
+        return;
+      }
+    }
+  } catch (e) {
+    // APIなし（GitHub Pagesなど）
+  }
+
+  // 2. GitHub Pages配信の data/latest.json
+  try {
+    const response2 = await fetch("./data/latest.json?t=" + Date.now(), { cache: "no-store" });
+    if (response2.ok) {
+      appData = await response2.json();
       renderDashboard(appData);
       if (callback) callback();
       return;
     }
-  } catch (e) {
-    console.log("API not available, running in standalone client-side mode (GitHub Pages / Direct fetch)");
-  }
-
-  // 2. GitHub Pages等でサーバーがない場合のクライアント直接取得フォールバック
-  try {
-    appData = await fetchClientSideData();
-    renderDashboard(appData);
   } catch (err) {
-    console.error("Client fetch error:", err);
+    console.error("Failed to load static latest.json:", err);
   }
 
   if (callback) callback();
-}
-
-/* ================= クライアントサイド直接フェッチ (GitHub Pages用) ================= */
-async function fetchClientSideData() {
-  const proxy = "https://api.allorigins.win/raw?url=";
-  const kawabouBase = "https://www.river.go.jp/kawabou/file/files";
-  const kawabouSystem = "https://www.river.go.jp/kawabou/file/system";
-
-  // 1. 最新時刻取得
-  let timePath = "";
-  let latestTimeStr = "";
-  try {
-    const timeRes = await fetch(proxy + encodeURIComponent(`${kawabouSystem}/tmCrntTime.json`));
-    const timeData = await timeRes.json();
-    const nums = (timeData.crntObsTime || "").match(/\d+/g);
-    if (nums && nums.length >= 5) {
-      const [y, m, d, h, min] = nums.map(Number);
-      const mRound = Math.floor(min / 10) * 10;
-      timePath = `${String(y).padStart(4,'0')}${String(m).padStart(2,'0')}${String(d).padStart(2,'0')}/${String(h).padStart(2,'0')}${String(mRound).padStart(2,'0')}/`;
-      latestTimeStr = `${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')} ${String(h).padStart(2,'0')}:${String(mRound).padStart(2,'0')}`;
-    }
-  } catch (e) {
-    const now = new Date();
-    const mRound = Math.floor(now.getMinutes() / 10) * 10;
-    const y = now.getFullYear(), m = now.getMonth() + 1, d = now.getDate(), h = now.getHours();
-    timePath = `${y}${String(m).padStart(2,'0')}${String(d).padStart(2,'0')}/${String(h).padStart(2,'0')}${String(mRound).padStart(2,'0')}/`;
-    latestTimeStr = `${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')} ${String(h).padStart(2,'0')}:${String(mRound).padStart(2,'0')}`;
-  }
-
-  const result = {
-    updated_at: new Date().toLocaleString("ja-JP"),
-    latest_obs_time: latestTimeStr,
-    stations: { stg: {}, dam: {}, rain: {} },
-    main_combined_timeline: [],
-    weather: null
-  };
-
-  // 2. 水位・ダム・雨量を並列フェッチ
-  const fetchTasks = [];
-
-  for (const [k, st] of Object.entries(STATIONS_DEF.stg)) {
-    fetchTasks.push(
-      fetch(proxy + encodeURIComponent(`${kawabouBase}/tmlist/stg/${timePath}${st.keyCd}.json`))
-        .then(r => r.json())
-        .then(d => {
-          result.stations.stg[k] = {
-            name: st.name, river: st.river, keyCd: st.keyCd, isMain: st.isMain,
-            current: d.obsValue || {}, min10Values: d.min10Values || []
-          };
-        })
-        .catch(() => {
-          result.stations.stg[k] = { name: st.name, river: st.river, keyCd: st.keyCd, isMain: st.isMain, current: {}, min10Values: [] };
-        })
-    );
-  }
-
-  for (const [k, dam] of Object.entries(STATIONS_DEF.dam)) {
-    fetchTasks.push(
-      fetch(proxy + encodeURIComponent(`${kawabouBase}/tmlist/dam/${timePath}${dam.keyCd}.json`))
-        .then(r => r.json())
-        .then(d => {
-          result.stations.dam[k] = {
-            name: dam.name, river: dam.river, keyCd: dam.keyCd, isMain: dam.isMain,
-            current: d.obsValue || {}, min10Values: d.min10Values || []
-          };
-        })
-        .catch(() => {
-          result.stations.dam[k] = { name: dam.name, river: dam.river, keyCd: dam.keyCd, isMain: dam.isMain, current: {}, min10Values: [] };
-        })
-    );
-  }
-
-  for (const [k, rn] of Object.entries(STATIONS_DEF.rain)) {
-    fetchTasks.push(
-      fetch(proxy + encodeURIComponent(`${kawabouBase}/tmlist/rn/${timePath}${rn.keyCd}.json`))
-        .then(r => r.json())
-        .then(d => {
-          result.stations.rain[k] = {
-            name: rn.name, keyCd: rn.keyCd, isMain: rn.isMain,
-            current: d.obsValue || {}, min10Values: d.min10Values || []
-          };
-        })
-        .catch(() => {
-          result.stations.rain[k] = { name: rn.name, keyCd: rn.keyCd, isMain: rn.isMain, current: {}, min10Values: [] };
-        })
-    );
-  }
-
-  // 天気
-  fetchTasks.push(
-    fetch("https://api.open-meteo.com/v1/forecast?latitude=36.768&longitude=138.971&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&hourly=temperature_2m,precipitation_probability,precipitation,weather_code&timezone=Asia%2FTokyo&forecast_days=2")
-      .then(r => r.json())
-      .then(w => { result.weather = w; })
-      .catch(() => {})
-  );
-
-  await Promise.all(fetchTasks);
-
-  // タイムライン結合
-  const yubaraList = (result.stations.stg.yubara && result.stations.stg.yubara.min10Values) || [];
-  const fujiwaraList = (result.stations.dam.fujiwara && result.stations.dam.fujiwara.min10Values) || [];
-  const yubaraRnList = (result.stations.rain.yubara_rn && result.stations.rain.yubara_rn.min10Values) || [];
-
-  const damMap = Object.fromEntries(fujiwaraList.map(item => [item.obsTime, item]));
-  const rnMap = Object.fromEntries(yubaraRnList.map(item => [item.obsTime, item]));
-
-  result.main_combined_timeline = yubaraList.map(stgItem => {
-    const t = stgItem.obsTime;
-    const damItem = damMap[t] || {};
-    const rnItem = rnMap[t] || {};
-    return {
-      obsTime: t,
-      stg: stgItem.stg,
-      stg10mChg: stgItem.stg10mChg,
-      stgHght: stgItem.stgHght,
-      damDischarge: damItem.allDisch,
-      damInflow: damItem.allSink,
-      damStorageRate: damItem.storPcntIrr,
-      damStorageLvl: damItem.storLvl,
-      rain10m: rnItem.rn10m,
-      rainInc: rnItem.rnInc
-    };
-  });
-
-  return result;
 }
 
 /* ================= 画面全体のレンダリング ================= */
