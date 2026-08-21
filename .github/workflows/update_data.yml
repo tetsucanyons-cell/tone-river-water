@@ -38,6 +38,8 @@ jobs:
           git add data/ public/data/
           if ! git diff --quiet || ! git diff --staged --quiet; then
             git commit -m "Auto-update river data & history: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+            # 安全にrebase pullしてからプッシュ
+            git pull --rebase origin main || true
             git push origin main
           else
             echo "No data changes detected."
