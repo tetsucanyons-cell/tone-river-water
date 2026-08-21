@@ -2,8 +2,8 @@ name: Update River & Dam Data
 
 on:
   schedule:
-    # 5〜10分おきに自動実行 (UTC)
-    - cron: '*/5 * * * *'
+    # 10分おきに自動実行 (UTC)
+    - cron: '*/10 * * * *'
   workflow_dispatch: # 手動実行
   push:
     branches:
@@ -11,6 +11,10 @@ on:
 
 permissions:
   contents: write
+
+concurrency:
+  group: update-river-data
+  cancel-in-progress: false
 
 jobs:
   update-data:
@@ -20,14 +24,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Fetch Latest River and Dam Data & Accumulate History
+      - name: Fetch Latest River and Dam Data
         run: |
           python fetch_data.py
 
@@ -36,11 +40,9 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add data/ public/data/
-          if ! git diff --quiet || ! git diff --staged --quiet; then
-            git commit -m "Auto-update river data & history: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
-            # 安全にrebase pullしてからプッシュ
-            git pull --rebase origin main || true
-            git push origin main
+          if ! git diff --staged --quiet; then
+            git commit -m "Auto-update river data [skip ci]"
+            git push origin HEAD:main
           else
-            echo "No data changes detected."
+            echo "No changes detected."
           fi
