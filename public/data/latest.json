@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-21 21:53:24",
+  "updated_at": "2026-08-21 21:54:38",
   "latest_obs_time": "2026/08/21 21:50",
   "time_path": "20260821/2150/",
   "stations": {
@@ -7791,7 +7791,7 @@
   "weather": {
     "latitude": 36.75,
     "longitude": 139.0,
-    "generationtime_ms": 0.19478797912597656,
+    "generationtime_ms": 0.18608570098876953,
     "utc_offset_seconds": 32400,
     "timezone": "Asia/Tokyo",
     "timezone_abbreviation": "GMT+9",
