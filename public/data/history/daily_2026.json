@@ -1,6 +1,10 @@
 {
   "year": "2026",
+<<<<<<< HEAD
   "updated_at": "2026-08-21 21:50:41",
+=======
+  "updated_at": "2026-08-21 09:46:25",
+>>>>>>> 745312b16b8c827aa04c3f4bc1dfc8b9736beb7a
   "total_days": 1,
   "daily_data": [
     {
