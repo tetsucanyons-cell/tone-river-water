@@ -1,11 +1,12 @@
 /**
- * 利根川 水位・ダム速報 JavaScript (iPhone 17 超高速・完全最適化版)
- * リアルタイム10分データ取得、タイムライン描画、Chart.js描画、タブ制御
+ * 利根川 水位・ダム速報 JavaScript (iPhone 17 超高速・完全リアルタイム最適化版)
+ * リアルタイム10分データ取得、キャッシュ完全回避、タイムライン描画、Chart.js描画、タブ制御
  */
 
 let appData = null;
 let charts = {};
 let countdownInterval = null;
+let isFetching = false;
 
 // 天気コード (WMO Weather codes)
 const WMO_WEATHER_MAP = {
@@ -64,14 +65,19 @@ function initTabs() {
   });
 }
 
-/* ================= 手動更新ボタン ================= */
+/* ================= 手動更新ボタン (即座に最新データを強制再取得) ================= */
 function initRefreshButton() {
   const btn = document.getElementById("btn-refresh");
   if (!btn) return;
   btn.addEventListener("click", () => {
+    if (isFetching) return;
     btn.classList.add("rotating");
+    
+    // 強制再取得
     loadData(() => {
-      setTimeout(() => btn.classList.remove("rotating"), 500);
+      setTimeout(() => {
+        btn.classList.remove("rotating");
+      }, 500);
     });
   });
 }
@@ -102,10 +108,11 @@ function startCountdownTimer() {
       timerElem.textContent = `${mStr}:${sStr}`;
     }
 
+    // 周期到達時に自動データ更新
     if (totalSeconds <= 1) {
       setTimeout(() => {
         loadData();
-      }, 2500);
+      }, 3000);
     }
   }
 
@@ -113,40 +120,61 @@ function startCountdownTimer() {
   countdownInterval = setInterval(updateTimer, 1000);
 }
 
-/* ================= 超高速データ読み込み (待機ゼロ秒最適化) ================= */
+/* ================= 超高速・キャッシュ完全バイパス データ読み込み ================= */
 async function loadData(callback) {
+  isFetching = true;
   const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+  const timestamp = Date.now();
   
-  // GitHub Pages または静的環境の場合は直接 ./data/latest.json を即時読み込み（タイムアウト待機ゼロ）
-  const targetUrl = isLocal ? "/api/data?t=" + Date.now() : "./data/latest.json?t=" + Date.now();
+  // 1. APIエンドポイント（ローカル または Vercel などサーバーレス環境）
+  const apiUrls = isLocal 
+    ? [`/api/data?_t=${timestamp}`]
+    : [`/api/data?_t=${timestamp}`, `./data/latest.json?_t=${timestamp}`];
 
-  try {
-    const response = await fetch(targetUrl, { cache: "no-store" });
-    if (response.ok) {
-      const json = await response.json();
-      if (json) {
-        appData = json;
-        renderDashboard(appData);
-        if (callback) callback();
-        return;
+  let loaded = false;
+
+  for (const url of apiUrls) {
+    try {
+      const response = await fetch(url, { 
+        cache: "no-store",
+        headers: {
+          "Pragma": "no-cache",
+          "Cache-Control": "no-cache, no-store, must-revalidate"
+        }
+      });
+      if (response.ok) {
+        const json = await response.json();
+        if (json && (json.main_combined_timeline || json.stations)) {
+          appData = json;
+          renderDashboard(appData);
+          loaded = true;
+          break;
+        }
       }
+    } catch (err) {
+      console.warn(`Fetch failed for ${url}:`, err);
     }
-  } catch (err) {
-    console.warn("Primary fetch failed, trying fallback:", err);
   }
 
-  // フォールバック
-  try {
-    const altUrl = isLocal ? "./data/latest.json?t=" + Date.now() : "/api/data?t=" + Date.now();
-    const response2 = await fetch(altUrl, { cache: "no-store" });
-    if (response2.ok) {
-      appData = await response2.json();
-      renderDashboard(appData);
+  // 2. 静的ファイルフォールバック
+  if (!loaded) {
+    try {
+      const staticUrl = `./data/latest.json?_t=${timestamp}`;
+      const response = await fetch(staticUrl, {
+        cache: "no-store",
+        headers: { "Pragma": "no-cache", "Cache-Control": "no-cache" }
+      });
+      if (response.ok) {
+        appData = await response.json();
+        renderDashboard(appData);
+        loaded = true;
+      }
+    } catch (e) {
+      console.error("Static data fetch failed:", e);
     }
-  } catch (e) {
-    console.error("All data fetch attempts failed:", e);
   }
 
+  isFetching = false;
   if (callback) callback();
 }
 
@@ -154,7 +182,12 @@ async function loadData(callback) {
 function renderDashboard(data) {
   if (!data) return;
 
-  document.getElementById("latest-obs-time").textContent = data.latest_obs_time || "--/-- --:--";
+  // 実測時刻
+  const obsTimeElem = document.getElementById("latest-obs-time");
+  if (obsTimeElem) {
+    obsTimeElem.textContent = data.latest_obs_time || "--/-- --:--";
+  }
+
   renderSpotlights(data);
   renderCombinedTimeline(data.main_combined_timeline);
   renderStgCards(data.stations.stg);
@@ -426,7 +459,7 @@ function renderCharts(data) {
   const reversed = [...timeline].reverse();
   const labels = reversed.map(r => r.obsTime ? r.obsTime.substring(11, 16) : "");
   
-  // 1. メイン二軸グラフ (湯原水位 & 藤原ダム放流量)
+  // 1. メイン二軸グラフ (湯原水位 & 藤原ダム放流量・流入量)
   const ctxMain = document.getElementById("chart-main-combined");
   if (ctxMain) {
     if (charts.main) charts.main.destroy();
