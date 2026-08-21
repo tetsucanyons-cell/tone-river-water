@@ -2,7 +2,7 @@ name: Update River & Dam Data
 
 on:
   schedule:
-    # 5〜10分おきに実行 (UTC)
+    # 5〜10分おきに自動実行 (UTC)
     - cron: '*/5 * * * *'
   workflow_dispatch: # 手動実行
   push:
@@ -27,17 +27,17 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Fetch Latest River and Dam Data
+      - name: Fetch Latest River and Dam Data & Accumulate History
         run: |
           python fetch_data.py
 
-      - name: Commit and Push Updated Data
+      - name: Commit and Push Updated Data & History
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add data/latest.json public/data/latest.json
+          git add data/ public/data/
           if ! git diff --quiet || ! git diff --staged --quiet; then
-            git commit -m "Auto-update river data: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+            git commit -m "Auto-update river data & history: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
             git push origin main
           else
             echo "No data changes detected."

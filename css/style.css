@@ -8,7 +8,7 @@
   --bg-secondary: #0e1a38;
   --bg-card: #16264c;
   --bg-card-glass: rgba(22, 38, 76, 0.85);
-  --bg-nav: rgba(10, 18, 42, 0.92);
+  --bg-nav: rgba(10, 18, 42, 0.94);
   --bg-hover: #1f3568;
   
   --text-primary: #ffffff;
@@ -57,18 +57,18 @@ html, body {
 }
 
 .app-container {
-  max-width: 600px; /* iPhone 17 / モバイルにジャストフィット */
+  max-width: 600px;
   margin: 0 auto;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   position: relative;
-  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 72px); /* 下部タブバー分の余白 */
+  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 72px);
 }
 
 /* ================= HEADER (Dynamic Island Safe) ================= */
 .app-header {
-  background: linear-gradient(180deg, rgba(14, 26, 56, 0.95) 0%, rgba(7, 13, 30, 0.9) 100%);
+  background: linear-gradient(180deg, rgba(14, 26, 56, 0.96) 0%, rgba(7, 13, 30, 0.92) 100%);
   padding: calc(env(safe-area-inset-top, 14px) + 10px) 16px 10px 16px;
   border-bottom: 1px solid var(--border-color);
   position: sticky;
@@ -442,7 +442,7 @@ html, body {
   padding: 2px 4px;
 }
 
-/* ================= 10分刻み実績タイムライン (iPhone 最適化) ================= */
+/* ================= 10分刻み実績タイムライン ================= */
 .timeline-section {
   background: var(--bg-card);
   border-radius: var(--radius-lg);
@@ -486,7 +486,6 @@ html, body {
 .disch-chip { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
 .rain-chip { background: rgba(16, 185, 129, 0.2); color: #34d399; }
 
-/* Table Container & Smooth Touch Scroll */
 .table-scroll-container {
   max-height: 520px;
   overflow-y: auto;
@@ -499,7 +498,7 @@ html, body {
 
 .timeline-table {
   width: 100%;
-  min-width: 480px; /* iPhoneで横スクロールを抑えつつ視認性最大化 */
+  min-width: 480px;
   border-collapse: collapse;
   text-align: right;
   font-size: 0.8rem;
@@ -566,7 +565,7 @@ html, body {
 }
 
 .col-inflow {
-  color: #94a3b8;
+  color: #38bdf8;
 }
 
 .col-rain {
@@ -663,7 +662,44 @@ html, body {
   color: var(--text-primary);
 }
 
-/* ================= CHART CONTAINERS ================= */
+/* ================= PERIOD SELECTOR & CHARTS ================= */
+.period-selector-container {
+  margin-bottom: 12px;
+}
+
+.period-selector {
+  display: flex;
+  background: rgba(7, 13, 30, 0.8);
+  padding: 4px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 4px;
+}
+
+.period-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  padding: 8px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.period-btn.active {
+  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  color: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+
+.period-btn:active {
+  transform: scale(0.95);
+}
+
 .chart-container-card {
   background: var(--bg-card);
   border-radius: var(--radius-lg);
@@ -673,17 +709,109 @@ html, body {
   box-shadow: var(--shadow-sm);
 }
 
+.chart-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
 .chart-container-card h4 {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 800;
   color: var(--text-primary);
-  margin-bottom: 10px;
+}
+
+.chart-badge {
+  font-size: 0.65rem;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  font-weight: 700;
 }
 
 .chart-wrapper {
   position: relative;
-  height: 230px;
+  height: 240px;
   width: 100%;
+}
+
+/* ================= CSV EXPORT CARD ================= */
+.export-card {
+  background: linear-gradient(145deg, #182852 0%, #0f1c3f 100%);
+  border-radius: var(--radius-lg);
+  padding: 16px 14px;
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  margin-top: 14px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-md);
+}
+
+.export-header {
+  margin-bottom: 12px;
+}
+
+.export-header h4 {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 3px;
+}
+
+.export-header p {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.export-btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.export-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.export-btn.secondary {
+  background: rgba(7, 13, 30, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+}
+
+.export-btn:active {
+  transform: scale(0.96);
+  opacity: 0.85;
+}
+
+.export-icon {
+  font-size: 1.4rem;
+}
+
+.export-btn strong {
+  display: block;
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.btn-subtext {
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  display: block;
+  margin-top: 1px;
 }
 
 /* ================= WEATHER & FORECAST ================= */
@@ -818,7 +946,7 @@ html, body {
   color: #34d399;
 }
 
-/* ================= BOTTOM NAVIGATION BAR (iOS Native Style for iPhone 17) ================= */
+/* ================= BOTTOM NAVIGATION BAR ================= */
 .bottom-nav-bar {
   position: fixed;
   bottom: 0;

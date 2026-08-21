@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="利根川水位">
   <meta name="format-detection" content="telephone=no">
-  <meta name="theme-color" content="#0a1128">
+  <meta name="theme-color" content="#070d1e">
   <link rel="manifest" href="./manifest.json">
   <link rel="apple-touch-icon" href="./icons/icon-192.png">
   
@@ -127,7 +127,7 @@
               <div class="dam-stat-box inflow-box">
                 <span class="stat-label">全流入量 (入水)</span>
                 <div class="stat-num-wrap">
-                  <span id="fujiwara-current-inflow" class="stat-num">--.--</span>
+                  <span id="fujiwara-current-inflow" class="stat-num" style="color:#38bdf8;">--.--</span>
                   <span class="stat-unit">m³/s</span>
                 </div>
               </div>
@@ -202,31 +202,76 @@
         </div>
       </section>
 
-      <!-- ================= TAB 4: 推移グラフ ================= -->
+      <!-- ================= TAB 4: 推移グラフ & 年間履歴 ================= -->
       <section id="tab-chart" class="tab-content">
         <div class="section-title-wrap">
-          <h3>📈 過去推移チャート（直近8時間）</h3>
-          <p>水位とダム放流量の相関・トレンドグラフ</p>
+          <h3>📈 水位・ダム推移 ＆ 過去履歴</h3>
+          <p>1日の10分変化から1ヶ月・年間の長期履歴まで確認</p>
         </div>
 
+        <!-- 期間セレクター (iPhone 17 最適化ピルボタン) -->
+        <div class="period-selector-container">
+          <div class="period-selector">
+            <button class="period-btn active" data-period="1d">1日 (10分)</button>
+            <button class="period-btn" data-period="1m">1ヶ月 (日別)</button>
+            <button class="period-btn" data-period="1y">1年間 (年間)</button>
+          </div>
+        </div>
+
+        <!-- Chart 1: 水位 & ダム放流量 -->
         <div class="chart-container-card">
-          <h4>湯原水位 & 藤原ダム放流量 推移</h4>
+          <div class="chart-header-row">
+            <h4 id="chart-main-title">湯原水位 & 藤原ダム放流量 (1日推移)</h4>
+            <span id="chart-main-sub" class="chart-badge">10分毎</span>
+          </div>
           <div class="chart-wrapper">
             <canvas id="chart-main-combined"></canvas>
           </div>
         </div>
 
+        <!-- Chart 2: ダム貯水率 ＆ 貯水量推移 -->
         <div class="chart-container-card">
-          <h4>4大水位観測所 水位推移比較 (m)</h4>
+          <div class="chart-header-row">
+            <h4 id="chart-dam-storage-title">藤原ダム 貯水率 (%) & 貯水量 (千m³)</h4>
+            <span class="chart-badge">ダム容量</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="chart-dam-storage"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 3: 4大水位観測所 水位比較 -->
+        <div class="chart-container-card">
+          <div class="chart-header-row">
+            <h4>4大水位観測所 水位推移比較 (m)</h4>
+            <span class="chart-badge">河川比較</span>
+          </div>
           <div class="chart-wrapper">
             <canvas id="chart-stg-all"></canvas>
           </div>
         </div>
 
-        <div class="chart-container-card">
-          <h4>4ダム 放流量推移比較 (m³/s)</h4>
-          <div class="chart-wrapper">
-            <canvas id="chart-dam-disch"></canvas>
+        <!-- CSV Export Card -->
+        <div class="export-card">
+          <div class="export-header">
+            <h4>📥 過去履歴 CSVダウンロード</h4>
+            <p>Excel等でそのまま開ける形式（UTF-8 BOM付き）で端末に保存できます</p>
+          </div>
+          <div class="export-btn-group">
+            <button id="btn-export-daily" class="export-btn">
+              <span class="export-icon">📊</span>
+              <div>
+                <strong>日別集計 CSV (2026年)</strong>
+                <span class="btn-subtext">日最高・最低・平均水位、ダム貯水量/率</span>
+              </div>
+            </button>
+            <button id="btn-export-monthly" class="export-btn secondary">
+              <span class="export-icon">⏱️</span>
+              <div>
+                <strong>今月 10分詳細 CSV</strong>
+                <span class="btn-subtext">全観測所の10分刻み全実測値</span>
+              </div>
+            </button>
           </div>
         </div>
       </section>

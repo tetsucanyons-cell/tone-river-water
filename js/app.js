@@ -1,9 +1,11 @@
 /**
- * 利根川 水位・ダム速報 JavaScript (iPhone 17 超高速・完全リアルタイム最適化版)
- * リアルタイム10分データ取得、キャッシュ完全回避、タイムライン描画、Chart.js描画、タブ制御
+ * 利根川 水位・ダム速報 JavaScript (iPhone 17 年間履歴 & CSVエクスポート対応版)
+ * リアルタイム10分データ取得、年間/月間履歴集計、Chart.js動的描画、CSV出力
  */
 
 let appData = null;
+let historyData = null;
+let currentPeriod = "1d"; // "1d" | "1m" | "1y"
 let charts = {};
 let countdownInterval = null;
 let isFetching = false;
@@ -35,7 +37,10 @@ const WMO_WEATHER_MAP = {
 document.addEventListener("DOMContentLoaded", () => {
   initTabs();
   initRefreshButton();
+  initPeriodSelector();
+  initExportButtons();
   loadData();
+  loadHistoryData();
   startCountdownTimer();
 });
 
@@ -65,7 +70,21 @@ function initTabs() {
   });
 }
 
-/* ================= 手動更新ボタン (即座に最新データを強制再取得) ================= */
+/* ================= 期間セレクター (1日 / 1ヶ月 / 1年間) ================= */
+function initPeriodSelector() {
+  const periodBtns = document.querySelectorAll(".period-btn");
+  periodBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      periodBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      currentPeriod = btn.getAttribute("data-period");
+      renderCharts();
+    });
+  });
+}
+
+/* ================= 手動更新ボタン ================= */
 function initRefreshButton() {
   const btn = document.getElementById("btn-refresh");
   if (!btn) return;
@@ -73,13 +92,30 @@ function initRefreshButton() {
     if (isFetching) return;
     btn.classList.add("rotating");
     
-    // 強制再取得
     loadData(() => {
-      setTimeout(() => {
-        btn.classList.remove("rotating");
-      }, 500);
+      loadHistoryData(() => {
+        setTimeout(() => btn.classList.remove("rotating"), 500);
+      });
     });
   });
+}
+
+/* ================= CSVエクスポートボタン ================= */
+function initExportButtons() {
+  const btnDaily = document.getElementById("btn-export-daily");
+  const btnMonthly = document.getElementById("btn-export-monthly");
+
+  if (btnDaily) {
+    btnDaily.addEventListener("click", () => {
+      exportDailyCsv();
+    });
+  }
+
+  if (btnMonthly) {
+    btnMonthly.addEventListener("click", () => {
+      exportMonthlyCsv();
+    });
+  }
 }
 
 /* ================= カウントダウンタイマー (10分周期) ================= */
@@ -108,10 +144,10 @@ function startCountdownTimer() {
       timerElem.textContent = `${mStr}:${sStr}`;
     }
 
-    // 周期到達時に自動データ更新
     if (totalSeconds <= 1) {
       setTimeout(() => {
         loadData();
+        loadHistoryData();
       }, 3000);
     }
   }
@@ -120,13 +156,12 @@ function startCountdownTimer() {
   countdownInterval = setInterval(updateTimer, 1000);
 }
 
-/* ================= 超高速・キャッシュ完全バイパス データ読み込み ================= */
+/* ================= 最新データ読み込み ================= */
 async function loadData(callback) {
   isFetching = true;
   const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
   const timestamp = Date.now();
   
-  // 1. APIエンドポイント（ローカル または Vercel などサーバーレス環境）
   const apiUrls = isLocal 
     ? [`/api/data?_t=${timestamp}`]
     : [`/api/data?_t=${timestamp}`, `./data/latest.json?_t=${timestamp}`];
@@ -137,10 +172,7 @@ async function loadData(callback) {
     try {
       const response = await fetch(url, { 
         cache: "no-store",
-        headers: {
-          "Pragma": "no-cache",
-          "Cache-Control": "no-cache, no-store, must-revalidate"
-        }
+        headers: { "Pragma": "no-cache", "Cache-Control": "no-cache" }
       });
       if (response.ok) {
         const json = await response.json();
@@ -156,7 +188,6 @@ async function loadData(callback) {
     }
   }
 
-  // 2. 静的ファイルフォールバック
   if (!loaded) {
     try {
       const staticUrl = `./data/latest.json?_t=${timestamp}`;
@@ -178,11 +209,34 @@ async function loadData(callback) {
   if (callback) callback();
 }
 
+/* ================= 年間・日別履歴データ読み込み (daily_YYYY.json) ================= */
+async function loadHistoryData(callback) {
+  const currentYear = new Date().getFullYear();
+  const timestamp = Date.now();
+  const url = `./data/history/daily_${currentYear}.json?_t=${timestamp}`;
+
+  try {
+    const res = await fetch(url, {
+      cache: "no-store",
+      headers: { "Pragma": "no-cache", "Cache-Control": "no-cache" }
+    });
+    if (res.ok) {
+      historyData = await res.json();
+      if (currentPeriod !== "1d") {
+        renderCharts();
+      }
+    }
+  } catch (e) {
+    console.warn("Failed to load daily history:", e);
+  }
+
+  if (callback) callback();
+}
+
 /* ================= 画面全体のレンダリング ================= */
 function renderDashboard(data) {
   if (!data) return;
 
-  // 実測時刻
   const obsTimeElem = document.getElementById("latest-obs-time");
   if (obsTimeElem) {
     obsTimeElem.textContent = data.latest_obs_time || "--/-- --:--";
@@ -192,7 +246,7 @@ function renderDashboard(data) {
   renderCombinedTimeline(data.main_combined_timeline);
   renderStgCards(data.stations.stg);
   renderDamCards(data.stations.dam);
-  renderCharts(data);
+  renderCharts();
   renderWeather(data.weather, data.stations.rain);
 }
 
@@ -232,7 +286,7 @@ function renderSpotlights(data) {
   const stgHght = yubaraCur.stgHght;
   document.getElementById("yubara-stg-hght").textContent = stgHght ? `${Number(stgHght).toFixed(2)} m` : "-- m";
 
-  // 湯原 トレンドバッジ
+  // トレンドバッジ
   const trendBadge = document.getElementById("yubara-trend-badge");
   if (chg10m > 0) {
     trendBadge.className = "trend-badge trend-up";
@@ -245,7 +299,7 @@ function renderSpotlights(data) {
     trendBadge.innerHTML = '<span class="trend-arrow">→</span><span class="trend-text">安定</span>';
   }
 
-  // 藤原ダム 放流量 & 流入量
+  // 藤原ダム
   const dischVal = fujiwaraCur.allDisch !== undefined && fujiwaraCur.allDisch !== null ? Number(fujiwaraCur.allDisch).toFixed(2) : "--.--";
   document.getElementById("fujiwara-current-disch").textContent = dischVal;
 
@@ -262,7 +316,7 @@ function renderSpotlights(data) {
   document.getElementById("yubara-current-rain").textContent = `${rnVal} mm`;
 }
 
-/* ================= 10分刻み実績タイムライン (湯原水位 × 藤原放流 × 流入 × 雨量) ================= */
+/* ================= 10分刻み実績タイムライン ================= */
 function renderCombinedTimeline(timeline) {
   const tbody = document.getElementById("timeline-tbody");
   if (!tbody) return;
@@ -310,7 +364,7 @@ function renderCombinedTimeline(timeline) {
   tbody.innerHTML = html;
 }
 
-/* ================= 水位観測所一覧 (4地点: 湯原・月夜野橋・小袖橋・湯宿) ================= */
+/* ================= 水位観測所一覧 (4地点) ================= */
 function renderStgCards(stgObj) {
   const container = document.getElementById("stg-cards-container");
   if (!container || !stgObj) return;
@@ -381,7 +435,7 @@ function renderStgCards(stgObj) {
   container.innerHTML = html;
 }
 
-/* ================= ダム諸量一覧 (4ダム: 流入量・放流量・貯水率) ================= */
+/* ================= ダム諸量一覧 (4ダム) ================= */
 function renderDamCards(damObj) {
   const container = document.getElementById("dam-cards-container");
   if (!container || !damObj) return;
@@ -451,22 +505,48 @@ function renderDamCards(damObj) {
   container.innerHTML = html;
 }
 
-/* ================= グラフ推移描画 (Chart.js) ================= */
-function renderCharts(data) {
-  const timeline = data.main_combined_timeline || [];
+/* ================= グラフ推移描画 (期間切り替え対応: 1日 / 1ヶ月 / 1年間) ================= */
+function renderCharts() {
+  if (!appData) return;
+
+  const mainTitleElem = document.getElementById("chart-main-title");
+  const mainSubElem = document.getElementById("chart-main-sub");
+  const storageTitleElem = document.getElementById("chart-dam-storage-title");
+
+  // A. 1日推移 (10分刻みリアルタイム)
+  if (currentPeriod === "1d" || !historyData || !historyData.daily_data || historyData.daily_data.length === 0) {
+    if (mainTitleElem) mainTitleElem.textContent = "湯原水位 & 藤原ダム放流量 (1日推移)";
+    if (mainSubElem) mainSubElem.textContent = "10分毎";
+    if (storageTitleElem) storageTitleElem.textContent = "藤原ダム 貯水率 (%) & 貯水量 (千m³)";
+
+    renderCharts1Day();
+    return;
+  }
+
+  // B. 1ヶ月 or 1年間推移 (日別集計データ)
+  const isMonth = currentPeriod === "1m";
+  const allDays = historyData.daily_data || [];
+  const days = isMonth ? allDays.slice(-30) : allDays;
+
+  if (mainTitleElem) mainTitleElem.textContent = isMonth ? "湯原水位 & 藤原放流量 (直近1ヶ月・日別)" : "湯原水位 & 藤原放流量 (2026年 年間推移)";
+  if (mainSubElem) mainSubElem.textContent = isMonth ? "日別集計" : "年間推移";
+  if (storageTitleElem) storageTitleElem.textContent = isMonth ? "藤原ダム 貯水率 ＆ 貯水量 (直近1ヶ月)" : "藤原ダム 貯水率 ＆ 貯水量 (2026年 年間推移)";
+
+  renderChartsHistorical(days);
+}
+
+/* 1日推移グラフ描画 (10分データ) */
+function renderCharts1Day() {
+  const timeline = appData.main_combined_timeline || [];
   if (timeline.length === 0) return;
 
   const reversed = [...timeline].reverse();
   const labels = reversed.map(r => r.obsTime ? r.obsTime.substring(11, 16) : "");
   
-  // 1. メイン二軸グラフ (湯原水位 & 藤原ダム放流量・流入量)
+  // 1. メイン二軸グラフ
   const ctxMain = document.getElementById("chart-main-combined");
   if (ctxMain) {
     if (charts.main) charts.main.destroy();
-
-    const stgData = reversed.map(r => r.stg);
-    const dischData = reversed.map(r => r.damDischarge);
-    const inflowData = reversed.map(r => r.damInflow);
 
     charts.main = new Chart(ctxMain, {
       type: "line",
@@ -475,31 +555,28 @@ function renderCharts(data) {
         datasets: [
           {
             label: "湯原 水位 (m)",
-            data: stgData,
+            data: reversed.map(r => r.stg),
             borderColor: "#38bdf8",
             backgroundColor: "rgba(56, 189, 248, 0.15)",
             borderWidth: 3,
             fill: true,
             yAxisID: "y-stg",
             tension: 0.25,
-            pointRadius: 1,
-            pointHoverRadius: 5
+            pointRadius: 1
           },
           {
             label: "藤原 放流量 (m³/s)",
-            data: dischData,
+            data: reversed.map(r => r.damDischarge),
             borderColor: "#fbbf24",
-            backgroundColor: "rgba(251, 191, 36, 0.1)",
             borderWidth: 2.5,
             borderDash: [4, 4],
             yAxisID: "y-dam",
             tension: 0.2,
-            pointRadius: 1,
-            pointHoverRadius: 5
+            pointRadius: 1
           },
           {
             label: "藤原 流入量 (m³/s)",
-            data: inflowData,
+            data: reversed.map(r => r.damInflow),
             borderColor: "#06b6d4",
             borderWidth: 1.5,
             yAxisID: "y-dam",
@@ -508,46 +585,53 @@ function renderCharts(data) {
           }
         ]
       },
+      options: getChartOptions("水位 (m)", "流量 (m³/s)")
+    });
+  }
+
+  // 2. ダム貯水率 & 貯水量グラフ
+  const ctxStorage = document.getElementById("chart-dam-storage");
+  if (ctxStorage) {
+    if (charts.storage) charts.storage.destroy();
+
+    charts.storage = new Chart(ctxStorage, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "藤原 貯水率 (%)",
+            data: reversed.map(r => r.damStorageRate),
+            borderColor: "#3b82f6",
+            backgroundColor: "rgba(59, 130, 246, 0.2)",
+            borderWidth: 2.5,
+            fill: true,
+            yAxisID: "y-rate",
+            tension: 0.2,
+            pointRadius: 0
+          }
+        ]
+      },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        interaction: { mode: "index", intersect: false },
-        plugins: {
-          legend: { labels: { color: "#94a3b8", font: { size: 11, family: "Inter" } } },
-          tooltip: { padding: 10, cornerRadius: 8 }
-        },
+        plugins: { legend: { labels: { color: "#94a3b8", font: { size: 10 } } } },
         scales: {
-          x: {
-            grid: { color: "rgba(255, 255, 255, 0.06)" },
-            ticks: { color: "#64748b", font: { size: 10 }, maxTicksLimit: 8 }
-          },
-          "y-stg": {
-            type: "linear",
-            position: "left",
-            grid: { color: "rgba(255, 255, 255, 0.06)" },
-            ticks: { color: "#38bdf8", font: { size: 10 } },
-            title: { display: true, text: "水位 (m)", color: "#38bdf8", font: { size: 10 } }
-          },
-          "y-dam": {
-            type: "linear",
-            position: "right",
-            grid: { drawOnChartArea: false },
-            ticks: { color: "#fbbf24", font: { size: 10 } },
-            title: { display: true, text: "流量 (m³/s)", color: "#fbbf24", font: { size: 10 } }
-          }
+          x: { grid: { color: "rgba(255, 255, 255, 0.06)" }, ticks: { color: "#64748b", maxTicksLimit: 8 } },
+          "y-rate": { min: 0, max: 100, ticks: { color: "#3b82f6" }, title: { display: true, text: "貯水率 (%)", color: "#3b82f6", font: { size: 10 } } }
         }
       }
     });
   }
 
-  // 2. 4大水位計 比較グラフ (湯原・月夜野・小袖・湯宿)
+  // 3. 4大水位計 比較グラフ
   const ctxStgAll = document.getElementById("chart-stg-all");
-  if (ctxStgAll && data.stations.stg) {
+  if (ctxStgAll && appData.stations.stg) {
     if (charts.stgAll) charts.stgAll.destroy();
 
     const stgColors = { yubara: "#38bdf8", tsukiyono: "#a78bfa", kosode: "#34d399", yujuku: "#f472b6" };
     const datasets = [];
-    for (const [key, stg] of Object.entries(data.stations.stg)) {
+    for (const [key, stg] of Object.entries(appData.stations.stg)) {
       const revList = [...(stg.min10Values || [])].reverse();
       const listMap = { ...Object.fromEntries(revList.map(r => [r.obsTime, r.stg])) };
       const series = reversed.map(r => listMap[r.obsTime] !== undefined ? listMap[r.obsTime] : null);
@@ -568,7 +652,6 @@ function renderCharts(data) {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        interaction: { mode: "index", intersect: false },
         plugins: { legend: { labels: { color: "#94a3b8", font: { size: 10 } } } },
         scales: {
           x: { grid: { color: "rgba(255, 255, 255, 0.06)" }, ticks: { color: "#64748b", maxTicksLimit: 8 } },
@@ -577,32 +660,127 @@ function renderCharts(data) {
       }
     });
   }
+}
 
-  // 3. 4ダム 放流量比較グラフ
-  const ctxDamDisch = document.getElementById("chart-dam-disch");
-  if (ctxDamDisch && data.stations.dam) {
-    if (charts.damDisch) charts.damDisch.destroy();
+/* 1ヶ月 / 1年間 履歴グラフ描画 (日別集計データ) */
+function renderChartsHistorical(days) {
+  if (!days || days.length === 0) return;
 
-    const damColors = { fujiwara: "#fbbf24", naramata: "#60a5fa", yagisawa: "#34d399", aimata: "#f87171" };
-    const datasets = [];
-    for (const [key, dam] of Object.entries(data.stations.dam)) {
-      const revList = [...(dam.min10Values || [])].reverse();
-      const listMap = { ...Object.fromEntries(revList.map(r => [r.obsTime, r.allDisch])) };
-      const series = reversed.map(r => listMap[r.obsTime] !== undefined ? listMap[r.obsTime] : null);
+  const labels = days.map(d => d.date ? d.date.substring(5) : ""); // "08/21"
 
-      datasets.push({
-        label: dam.name,
-        data: series,
-        borderColor: damColors[key] || "#ffffff",
-        borderWidth: dam.isMain ? 3 : 2,
-        tension: 0.2,
-        pointRadius: 0
-      });
-    }
+  // 1. 水位 (最高・最低・平均) & 放流量
+  const ctxMain = document.getElementById("chart-main-combined");
+  if (ctxMain) {
+    if (charts.main) charts.main.destroy();
 
-    charts.damDisch = new Chart(ctxDamDisch, {
+    charts.main = new Chart(ctxMain, {
       type: "line",
-      data: { labels: labels, datasets: datasets },
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "湯原 日最高水位 (m)",
+            data: days.map(d => d.yubara_max),
+            borderColor: "#f43f5e",
+            borderWidth: 2,
+            tension: 0.2,
+            yAxisID: "y-stg",
+            pointRadius: days.length > 60 ? 0 : 2
+          },
+          {
+            label: "湯原 日平均水位 (m)",
+            data: days.map(d => d.yubara_avg),
+            borderColor: "#38bdf8",
+            backgroundColor: "rgba(56, 189, 248, 0.15)",
+            fill: true,
+            borderWidth: 2.5,
+            tension: 0.2,
+            yAxisID: "y-stg",
+            pointRadius: days.length > 60 ? 0 : 2
+          },
+          {
+            label: "湯原 日最低水位 (m)",
+            data: days.map(d => d.yubara_min),
+            borderColor: "#34d399",
+            borderWidth: 2,
+            tension: 0.2,
+            yAxisID: "y-stg",
+            pointRadius: days.length > 60 ? 0 : 2
+          },
+          {
+            label: "藤原 日平均放流 (m³/s)",
+            data: days.map(d => d.fujiwara_disch_avg),
+            borderColor: "#fbbf24",
+            borderWidth: 2,
+            borderDash: [3, 3],
+            yAxisID: "y-dam",
+            tension: 0.2,
+            pointRadius: 0
+          }
+        ]
+      },
+      options: getChartOptions("水位 (m)", "放流 (m³/s)")
+    });
+  }
+
+  // 2. ダム貯水率 (%) & 貯水量 (千m³)
+  const ctxStorage = document.getElementById("chart-dam-storage");
+  if (ctxStorage) {
+    if (charts.storage) charts.storage.destroy();
+
+    charts.storage = new Chart(ctxStorage, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "藤原 貯水率 (%)",
+            data: days.map(d => d.fujiwara_stor_rate),
+            borderColor: "#3b82f6",
+            borderWidth: 2.5,
+            yAxisID: "y-rate",
+            tension: 0.2,
+            pointRadius: days.length > 60 ? 0 : 2
+          },
+          {
+            label: "奈良俣 貯水率 (%)",
+            data: days.map(d => d.naramata_stor_rate),
+            borderColor: "#60a5fa",
+            borderWidth: 1.5,
+            yAxisID: "y-rate",
+            tension: 0.2,
+            pointRadius: 0
+          },
+          {
+            label: "矢木沢 貯水率 (%)",
+            data: days.map(d => d.yagisawa_stor_rate),
+            borderColor: "#34d399",
+            borderWidth: 1.5,
+            yAxisID: "y-rate",
+            tension: 0.2,
+            pointRadius: 0
+          },
+          {
+            label: "相俣 貯水率 (%)",
+            data: days.map(d => d.aimata_stor_rate),
+            borderColor: "#f87171",
+            borderWidth: 1.5,
+            yAxisID: "y-rate",
+            tension: 0.2,
+            pointRadius: 0
+          },
+          {
+            label: "藤原 貯水量 (千m³)",
+            data: days.map(d => d.fujiwara_stor_cap),
+            borderColor: "#c084fc",
+            borderDash: [4, 4],
+            borderWidth: 2,
+            yAxisID: "y-cap",
+            tension: 0.2,
+            pointRadius: 0
+          }
+        ]
+      },
       options: {
         responsive: true,
         maintainAspectRatio: false,
@@ -610,11 +788,153 @@ function renderCharts(data) {
         plugins: { legend: { labels: { color: "#94a3b8", font: { size: 10 } } } },
         scales: {
           x: { grid: { color: "rgba(255, 255, 255, 0.06)" }, ticks: { color: "#64748b", maxTicksLimit: 8 } },
-          y: { grid: { color: "rgba(255, 255, 255, 0.06)" }, ticks: { color: "#94a3b8" } }
+          "y-rate": {
+            type: "linear",
+            position: "left",
+            min: 0,
+            max: 100,
+            ticks: { color: "#3b82f6", font: { size: 10 } },
+            title: { display: true, text: "貯水率 (%)", color: "#3b82f6", font: { size: 10 } }
+          },
+          "y-cap": {
+            type: "linear",
+            position: "right",
+            grid: { drawOnChartArea: false },
+            ticks: { color: "#c084fc", font: { size: 10 } },
+            title: { display: true, text: "貯水量 (千m³)", color: "#c084fc", font: { size: 10 } }
+          }
         }
       }
     });
   }
+
+  // 3. 4ダム貯水率 比較
+  const ctxStgAll = document.getElementById("chart-stg-all");
+  if (ctxStgAll) {
+    if (charts.stgAll) charts.stgAll.destroy();
+
+    charts.stgAll = new Chart(ctxStgAll, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [
+          { label: "藤原 (利根川)", data: days.map(d => d.fujiwara_stor_rate), borderColor: "#fbbf24", borderWidth: 2.5 },
+          { label: "奈良俣 (楢俣川)", data: days.map(d => d.naramata_stor_rate), borderColor: "#60a5fa", borderWidth: 2 },
+          { label: "矢木沢 (利根川)", data: days.map(d => d.yagisawa_stor_rate), borderColor: "#34d399", borderWidth: 2 },
+          { label: "相俣 (赤谷川)", data: days.map(d => d.aimata_stor_rate), borderColor: "#f87171", borderWidth: 2 }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: "#94a3b8", font: { size: 10 } } } },
+        scales: {
+          x: { grid: { color: "rgba(255, 255, 255, 0.06)" }, ticks: { color: "#64748b", maxTicksLimit: 8 } },
+          y: { min: 0, max: 100, grid: { color: "rgba(255, 255, 255, 0.06)" }, ticks: { color: "#94a3b8" } }
+        }
+      }
+    });
+  }
+}
+
+function getChartOptions(yLeftTitle, yRightTitle) {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: "index", intersect: false },
+    plugins: {
+      legend: { labels: { color: "#94a3b8", font: { size: 10, family: "Inter" } } },
+      tooltip: { padding: 8, cornerRadius: 8 }
+    },
+    scales: {
+      x: { grid: { color: "rgba(255, 255, 255, 0.06)" }, ticks: { color: "#64748b", font: { size: 10 }, maxTicksLimit: 8 } },
+      "y-stg": {
+        type: "linear",
+        position: "left",
+        grid: { color: "rgba(255, 255, 255, 0.06)" },
+        ticks: { color: "#38bdf8", font: { size: 10 } },
+        title: { display: true, text: yLeftTitle, color: "#38bdf8", font: { size: 10 } }
+      },
+      "y-dam": {
+        type: "linear",
+        position: "right",
+        grid: { drawOnChartArea: false },
+        ticks: { color: "#fbbf24", font: { size: 10 } },
+        title: { display: true, text: yRightTitle, color: "#fbbf24", font: { size: 10 } }
+      }
+    }
+  };
+}
+
+/* ================= CSVエクスポート処理 (UTF-8 BOM付き) ================= */
+async function exportDailyCsv() {
+  const currentYear = new Date().getFullYear();
+  const filename = `利根川水位_藤原ダム_日別集計_${currentYear}年.csv`;
+  const url = `./data/history/daily_${currentYear}.csv?_t=${Date.now()}`;
+
+  try {
+    const res = await fetch(url);
+    if (res.ok) {
+      const blob = await res.blob();
+      triggerDownload(blob, filename);
+      return;
+    }
+  } catch (e) {
+    console.warn("Direct CSV download failed, generating from memory:", e);
+  }
+
+  // メモリからCSV生成
+  if (historyData && historyData.daily_data) {
+    let csv = "日付,湯原最高水位(m),湯原最低水位(m),湯原平均水位(m),藤原放流最高(m3/s),藤原放流平均(m3/s),藤原流入平均(m3/s),藤原貯水率(%),藤原貯水量(千m3),奈良俣貯水率(%),矢木沢貯水率(%),相俣貯水率(%),日雨量(mm)\n";
+    historyData.daily_data.forEach(d => {
+      csv += `${d.date},${d.yubara_max||""},${d.yubara_min||""},${d.yubara_avg||""},${d.fujiwara_disch_max||""},${d.fujiwara_disch_avg||""},${d.fujiwara_inflow_avg||""},${d.fujiwara_stor_rate||""},${d.fujiwara_stor_cap||""},${d.naramata_stor_rate||""},${d.yagisawa_stor_rate||""},${d.aimata_stor_rate||""},${d.rain_total||0}\n`;
+    });
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    triggerDownload(blob, filename);
+  } else {
+    alert("日別集計データがまだありません。");
+  }
+}
+
+async function exportMonthlyCsv() {
+  const now = new Date();
+  const ym = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  const filename = `利根川水位_10分詳細_${ym}.csv`;
+  const url = `./data/history/${ym}.csv?_t=${Date.now()}`;
+
+  try {
+    const res = await fetch(url);
+    if (res.ok) {
+      const blob = await res.blob();
+      triggerDownload(blob, filename);
+      return;
+    }
+  } catch (e) {
+    console.warn("Direct monthly CSV failed:", e);
+  }
+
+  // タイムラインからCSV生成
+  if (appData && appData.main_combined_timeline) {
+    let csv = "観測時刻,湯原水位(m),湯原10分変化(m),藤原放流(m3/s),藤原流入(m3/s),藤原貯水率(%),藤原貯水位(m),10分雨量(mm),累計雨量(mm)\n";
+    appData.main_combined_timeline.forEach(r => {
+      csv += `${r.obsTime},${r.stg||""},${r.stg10mChg||""},${r.damDischarge||""},${r.damInflow||""},${r.damStorageRate||""},${r.damStorageLvl||""},${r.rain10m||""},${r.rainInc||""}\n`;
+    });
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    triggerDownload(blob, filename);
+  } else {
+    alert("10分詳細データがありません。");
+  }
+}
+
+function triggerDownload(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 /* ================= 気象・雨量タブ ================= */
