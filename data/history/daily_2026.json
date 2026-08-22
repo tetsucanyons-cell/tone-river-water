@@ -1,6 +1,6 @@
 {
   "year": "2026",
-  "updated_at": "2026-08-22 13:57:06",
+  "updated_at": "2026-08-22 14:21:48",
   "total_days": 2,
   "daily_data": [
     {
@@ -33,7 +33,7 @@
       "yagisawa_stor_rate": 93.9,
       "aimata_stor_rate": 94.8,
       "rain_total": 0.0,
-      "sample_count": 84
+      "sample_count": 86
     }
   ]
 }
