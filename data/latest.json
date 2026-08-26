@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-08-26 20:46:25",
-  "latest_obs_time": "2026/08/26 20:40",
-  "time_path": "20260826/2040/",
+  "updated_at": "2026-08-26 21:16:46",
+  "latest_obs_time": "2026/08/26 21:10",
+  "time_path": "20260826/2110/",
   "stations": {
     "stg": {
       "yubara": {
@@ -10,23 +10,59 @@
         "keyCd": "2128900400012",
         "isMain": true,
         "current": {
-          "stg": 2.25,
+          "stg": 2.23,
           "stgCcd": 0,
           "stgQmflg": null,
           "stgOvlvl": 0,
-          "stg10mChg": 0.01,
+          "stg10mChg": 0,
           "stg10mChgCcd": 0,
           "stg10mChgQmflg": null,
-          "stgHrChg": -0.01,
+          "stgHrChg": 0.05,
           "stgHrChgCcd": 0,
           "stgHrChgQmflg": null,
           "stgOvdeg": 0,
-          "stgLtstChg": 0.01,
+          "stgLtstChg": 0,
           "stgLtstChgCcd": 0,
-          "obsTime": "2026/08/26 20:40",
-          "stgHght": 461.397
+          "obsTime": "2026/08/26 21:10",
+          "stgHght": 461.377
         },
         "min10Values": [
+          {
+            "stg": 2.23,
+            "obsTime": "2026/08/26 21:10",
+            "stgCcd": 0,
+            "stgOvlvl": 0,
+            "stg10mChg": 0,
+            "stg10mChgCcd": 0,
+            "stgOvdeg": 0,
+            "stgQmflg": null,
+            "stgHght": 461.377,
+            "stgCrsHght": 461.377
+          },
+          {
+            "stg": 2.23,
+            "obsTime": "2026/08/26 21:00",
+            "stgCcd": 0,
+            "stgOvlvl": 0,
+            "stg10mChg": -0.01,
+            "stg10mChgCcd": 0,
+            "stgOvdeg": 0,
+            "stgQmflg": null,
+            "stgHght": 461.377,
+            "stgCrsHght": 461.377
+          },
+          {
+            "stg": 2.24,
+            "obsTime": "2026/08/26 20:50",
+            "stgCcd": 0,
+            "stgOvlvl": 0,
+            "stg10mChg": -0.01,
+            "stg10mChgCcd": 0,
+            "stgOvdeg": 0,
+            "stgQmflg": null,
+            "stgHght": 461.387,
+            "stgCrsHght": 461.387
+          },
           {
             "stg": 2.25,
             "obsTime": "2026/08/26 20:40",
@@ -590,42 +626,6 @@
             "stgQmflg": null,
             "stgHght": 461.347,
             "stgCrsHght": 461.347
-          },
-          {
-            "stg": 2.2,
-            "obsTime": "2026/08/26 12:50",
-            "stgCcd": 0,
-            "stgOvlvl": 0,
-            "stg10mChg": 0,
-            "stg10mChgCcd": 0,
-            "stgOvdeg": 0,
-            "stgQmflg": null,
-            "stgHght": 461.347,
-            "stgCrsHght": 461.347
-          },
-          {
-            "stg": 2.2,
-            "obsTime": "2026/08/26 12:40",
-            "stgCcd": 0,
-            "stgOvlvl": 0,
-            "stg10mChg": 0,
-            "stg10mChgCcd": 0,
-            "stgOvdeg": 0,
-            "stgQmflg": null,
-            "stgHght": 461.347,
-            "stgCrsHght": 461.347
-          },
-          {
-            "stg": 2.2,
-            "obsTime": "2026/08/26 12:30",
-            "stgCcd": 0,
-            "stgOvlvl": 0,
-            "stg10mChg": 0,
-            "stg10mChgCcd": 0,
-            "stgOvdeg": 0,
-            "stgQmflg": null,
-            "stgHght": 461.347,
-            "stgCrsHght": 461.347
           }
         ]
       },
@@ -635,7 +635,7 @@
         "keyCd": "0256100400044",
         "isMain": false,
         "current": {
-          "stg": 2.97,
+          "stg": 2.99,
           "stgCcd": 0,
           "stgQmflg": null,
           "stgOvlvl": 0,
@@ -648,12 +648,12 @@
           "stgOvdeg": 0,
           "stgLtstChg": 0.01,
           "stgLtstChgCcd": 0,
-          "obsTime": "2026/08/26 20:30",
-          "stgHght": 360.97
+          "obsTime": "2026/08/26 21:00",
+          "stgHght": 360.99
         },
         "min10Values": [
           {
-            "obsTime": "2026/08/26 20:40",
+            "obsTime": "2026/08/26 21:10",
             "stg": null,
             "stgHght": null,
             "stgCrsHght": null,
@@ -663,6 +663,42 @@
             "stgOvdeg": null,
             "stg10mChg": null,
             "stg10mChgCcd": null
+          },
+          {
+            "stg": 2.99,
+            "obsTime": "2026/08/26 21:00",
+            "stgCcd": 0,
+            "stgOvlvl": 0,
+            "stg10mChg": 0,
+            "stg10mChgCcd": 160,
+            "stgOvdeg": 0,
+            "stgQmflg": null,
+            "stgHght": 360.99,
+            "stgCrsHght": 360.99
+          },
+          {
+            "stg": 2.99,
+            "obsTime": "2026/08/26 20:50",
+            "stgCcd": 0,
+            "stgOvlvl": 0,
+            "stg10mChg": 0,
+            "stg10mChgCcd": 160,
+            "stgOvdeg": 0,
+            "stgQmflg": null,
+            "stgHght": 360.99,
+            "stgCrsHght": 360.99
+          },
+          {
+            "stg": 2.99,
+            "obsTime": "2026/08/26 20:40",
+            "stgCcd": 0,
+            "stgOvlvl": 0,
+            "stg10mChg": 0,
+            "stg10mChgCcd": 160,
+            "stgOvdeg": 0,
+            "stgQmflg": null,
+            "stgHght": 360.99,
+            "stgCrsHght": 360.99
           },
           {
             "stg": 2.97,
@@ -1215,42 +1251,6 @@
             "stgQmflg": null,
             "stgHght": 360.97,
             "stgCrsHght": 360.97
-          },
-          {
-            "stg": 2.98,
-            "obsTime": "2026/08/26 12:50",
-            "stgCcd": 0,
-            "stgOvlvl": 0,
-            "stg10mChg": 0,
-            "stg10mChgCcd": 160,
-            "stgOvdeg": 0,
-            "stgQmflg": null,
-            "stgHght": 360.98,
-            "stgCrsHght": 360.98
-          },
-          {
-            "stg": 2.97,
-            "obsTime": "2026/08/26 12:40",
-            "stgCcd": 0,
-            "stgOvlvl": 0,
-            "stg10mChg": 0,
-            "stg10mChgCcd": 160,
-            "stgOvdeg": 0,
-            "stgQmflg": null,
-            "stgHght": 360.97,
-            "stgCrsHght": 360.97
-          },
-          {
-            "stg": 2.98,
-            "obsTime": "2026/08/26 12:30",
-            "stgCcd": 0,
-            "stgOvlvl": 0,
-            "stg10mChg": 0,
-            "stg10mChgCcd": 160,
-            "stgOvdeg": 0,
-            "stgQmflg": null,
-            "stgHght": 360.98,
-            "stgCrsHght": 360.98
           }
         ]
       },
@@ -1264,19 +1264,55 @@
           "stgCcd": 0,
           "stgQmflg": null,
           "stgOvlvl": 0,
-          "stg10mChg": 0.02,
+          "stg10mChg": 0,
           "stg10mChgCcd": 0,
           "stg10mChgQmflg": null,
-          "stgHrChg": 0,
+          "stgHrChg": 0.05,
           "stgHrChgCcd": 0,
           "stgHrChgQmflg": null,
           "stgOvdeg": 0,
-          "stgLtstChg": 0.02,
+          "stgLtstChg": 0,
           "stgLtstChgCcd": 0,
-          "obsTime": "2026/08/26 20:40",
+          "obsTime": "2026/08/26 21:10",
           "stgHght": 373.934
         },
         "min10Values": [
+          {
+            "stg": 0.28,
+            "obsTime": "2026/08/26 21:10",
+            "stgCcd": 0,
+            "stgOvlvl": 0,
+            "stg10mChg": 0,
+            "stg10mChgCcd": 0,
+            "stgOvdeg": 0,
+            "stgQmflg": null,
+            "stgHght": 373.934,
+            "stgCrsHght": 373.934
+          },
+          {
+            "stg": 0.28,
+            "obsTime": "2026/08/26 21:00",
+            "stgCcd": 0,
+            "stgOvlvl": 0,
+            "stg10mChg": 0,
+            "stg10mChgCcd": 0,
+            "stgOvdeg": 0,
+            "stgQmflg": null,
+            "stgHght": 373.934,
+            "stgCrsHght": 373.934
+          },
+          {
+            "stg": 0.28,
+            "obsTime": "2026/08/26 20:50",
+            "stgCcd": 0,
+            "stgOvlvl": 0,
+            "stg10mChg": 0,
+            "stg10mChgCcd": 0,
+            "stgOvdeg": 0,
+            "stgQmflg": null,
+            "stgHght": 373.934,
+            "stgCrsHght": 373.934
+          },
           {
             "stg": 0.28,
             "obsTime": "2026/08/26 20:40",
@@ -1840,42 +1876,6 @@
             "stgQmflg": null,
             "stgHght": 374.144,
             "stgCrsHght": 374.144
-          },
-          {
-            "stg": 0.49,
-            "obsTime": "2026/08/26 12:50",
-            "stgCcd": 0,
-            "stgOvlvl": 0,
-            "stg10mChg": 0.01,
-            "stg10mChgCcd": 0,
-            "stgOvdeg": 0,
-            "stgQmflg": null,
-            "stgHght": 374.144,
-            "stgCrsHght": 374.144
-          },
-          {
-            "stg": 0.48,
-            "obsTime": "2026/08/26 12:40",
-            "stgCcd": 0,
-            "stgOvlvl": 0,
-            "stg10mChg": 0,
-            "stg10mChgCcd": 0,
-            "stgOvdeg": 0,
-            "stgQmflg": null,
-            "stgHght": 374.134,
-            "stgCrsHght": 374.134
-          },
-          {
-            "stg": 0.48,
-            "obsTime": "2026/08/26 12:30",
-            "stgCcd": 0,
-            "stgOvlvl": 0,
-            "stg10mChg": 0,
-            "stg10mChgCcd": 0,
-            "stgOvdeg": 0,
-            "stgQmflg": null,
-            "stgHght": 374.134,
-            "stgCrsHght": 374.134
           }
         ]
       },
@@ -1892,16 +1892,52 @@
           "stg10mChg": 0,
           "stg10mChgCcd": 0,
           "stg10mChgQmflg": null,
-          "stgHrChg": 0.01,
+          "stgHrChg": 0,
           "stgHrChgCcd": 0,
           "stgHrChgQmflg": null,
           "stgOvdeg": 0,
           "stgLtstChg": 0,
           "stgLtstChgCcd": 0,
-          "obsTime": "2026/08/26 20:40",
+          "obsTime": "2026/08/26 21:10",
           "stgHght": 470.103
         },
         "min10Values": [
+          {
+            "stg": 0.98,
+            "obsTime": "2026/08/26 21:10",
+            "stgCcd": 0,
+            "stgOvlvl": 0,
+            "stg10mChg": 0,
+            "stg10mChgCcd": 0,
+            "stgOvdeg": 0,
+            "stgQmflg": null,
+            "stgHght": 470.103,
+            "stgCrsHght": 470.103
+          },
+          {
+            "stg": 0.98,
+            "obsTime": "2026/08/26 21:00",
+            "stgCcd": 0,
+            "stgOvlvl": 0,
+            "stg10mChg": 0,
+            "stg10mChgCcd": 0,
+            "stgOvdeg": 0,
+            "stgQmflg": null,
+            "stgHght": 470.103,
+            "stgCrsHght": 470.103
+          },
+          {
+            "stg": 0.98,
+            "obsTime": "2026/08/26 20:50",
+            "stgCcd": 0,
+            "stgOvlvl": 0,
+            "stg10mChg": 0,
+            "stg10mChgCcd": 0,
+            "stgOvdeg": 0,
+            "stgQmflg": null,
+            "stgHght": 470.103,
+            "stgCrsHght": 470.103
+          },
           {
             "stg": 0.98,
             "obsTime": "2026/08/26 20:40",
@@ -2465,42 +2501,6 @@
             "stgQmflg": null,
             "stgHght": 470.103,
             "stgCrsHght": 470.103
-          },
-          {
-            "stg": 0.98,
-            "obsTime": "2026/08/26 12:50",
-            "stgCcd": 0,
-            "stgOvlvl": 0,
-            "stg10mChg": 0,
-            "stg10mChgCcd": 0,
-            "stgOvdeg": 0,
-            "stgQmflg": null,
-            "stgHght": 470.103,
-            "stgCrsHght": 470.103
-          },
-          {
-            "stg": 0.98,
-            "obsTime": "2026/08/26 12:40",
-            "stgCcd": 0,
-            "stgOvlvl": 0,
-            "stg10mChg": 0,
-            "stg10mChgCcd": 0,
-            "stgOvdeg": 0,
-            "stgQmflg": null,
-            "stgHght": 470.103,
-            "stgCrsHght": 470.103
-          },
-          {
-            "stg": 0.98,
-            "obsTime": "2026/08/26 12:30",
-            "stgCcd": 0,
-            "stgOvlvl": 0,
-            "stg10mChg": 0,
-            "stg10mChgCcd": 0,
-            "stgOvdeg": 0,
-            "stgQmflg": null,
-            "stgHght": 470.103,
-            "stgCrsHght": 470.103
           }
         ]
       }
@@ -2512,10 +2512,10 @@
         "keyCd": "2128900700003",
         "isMain": true,
         "current": {
-          "storLvl": 637.7,
+          "storLvl": 637.73,
           "storLvlCcd": 0,
           "storLvlOvflg": 0,
-          "storCap": 13161,
+          "storCap": 13193,
           "storCapCcd": 0,
           "storCapOvflg": null,
           "storFcntIrr": 0,
@@ -2524,20 +2524,71 @@
           "storPcntIrr": 100,
           "storPcntIrrCcd": 0,
           "storPcntIrrOvflg": null,
-          "allSink": 70.33,
+          "allSink": 61.68,
           "allSinkCcd": 0,
           "allSinkOvflg": 0,
-          "allDisch": 20.39,
+          "allDisch": 20.38,
           "allDischCcd": 0,
           "allDischOvflg": null,
           "storPcntEff": 0,
           "storPcntEffCcd": 160,
           "storPcntEffOvflg": null,
-          "obsTime": "2026/08/26 20:40",
+          "obsTime": "2026/08/26 21:10",
           "damdschLvl": null,
           "damdschFgrNm": null
         },
         "min10Values": [
+          {
+            "obsTime": "2026/08/26 21:10",
+            "storLvl": 637.73,
+            "storLvlCcd": 0,
+            "storCap": 13193,
+            "storCapCcd": 0,
+            "storFcntIrr": 0,
+            "storFcntIrrCcd": 160,
+            "storPcntIrr": 100,
+            "storPcntIrrCcd": 0,
+            "storPcntEff": 0,
+            "storPcntEffCcd": 160,
+            "allSink": 61.68,
+            "allSinkCcd": 0,
+            "allDisch": 20.38,
+            "allDischCcd": 0
+          },
+          {
+            "obsTime": "2026/08/26 21:00",
+            "storLvl": 637.73,
+            "storLvlCcd": 0,
+            "storCap": 13198,
+            "storCapCcd": 0,
+            "storFcntIrr": 0,
+            "storFcntIrrCcd": 160,
+            "storPcntIrr": 100,
+            "storPcntIrrCcd": 0,
+            "storPcntEff": 0,
+            "storPcntEffCcd": 160,
+            "allSink": 91.66,
+            "allSinkCcd": 0,
+            "allDisch": 20.38,
+            "allDischCcd": 0
+          },
+          {
+            "obsTime": "2026/08/26 20:50",
+            "storLvl": 637.72,
+            "storLvlCcd": 0,
+            "storCap": 13182,
+            "storCapCcd": 0,
+            "storFcntIrr": 0,
+            "storFcntIrrCcd": 160,
+            "storPcntIrr": 100,
+            "storPcntIrrCcd": 0,
+            "storPcntEff": 0,
+            "storPcntEffCcd": 160,
+            "allSink": 108.07,
+            "allSinkCcd": 0,
+            "allDisch": 20.38,
+            "allDischCcd": 0
+          },
           {
             "obsTime": "2026/08/26 20:40",
             "storLvl": 637.7,
@@ -3336,57 +3387,6 @@
             "allSinkCcd": 0,
             "allDisch": 20.32,
             "allDischCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:50",
-            "storLvl": 637.39,
-            "storLvlCcd": 0,
-            "storCap": 12813,
-            "storCapCcd": 0,
-            "storFcntIrr": 0,
-            "storFcntIrrCcd": 160,
-            "storPcntIrr": 100,
-            "storPcntIrrCcd": 0,
-            "storPcntEff": 0,
-            "storPcntEffCcd": 160,
-            "allSink": 20.25,
-            "allSinkCcd": 0,
-            "allDisch": 19.71,
-            "allDischCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:40",
-            "storLvl": 637.39,
-            "storLvlCcd": 0,
-            "storCap": 12813,
-            "storCapCcd": 0,
-            "storFcntIrr": 0,
-            "storFcntIrrCcd": 160,
-            "storPcntIrr": 100,
-            "storPcntIrrCcd": 0,
-            "storPcntEff": 0,
-            "storPcntEffCcd": 160,
-            "allSink": 20.27,
-            "allSinkCcd": 0,
-            "allDisch": 20.32,
-            "allDischCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:30",
-            "storLvl": 637.39,
-            "storLvlCcd": 0,
-            "storCap": 12813,
-            "storCapCcd": 0,
-            "storFcntIrr": 0,
-            "storFcntIrrCcd": 160,
-            "storPcntIrr": 100,
-            "storPcntIrrCcd": 0,
-            "storPcntEff": 0,
-            "storPcntEffCcd": 160,
-            "allSink": 20.79,
-            "allSinkCcd": 0,
-            "allDisch": 20.32,
-            "allDischCcd": 0
           }
         ]
       },
@@ -3417,11 +3417,62 @@
           "storPcntEff": 0,
           "storPcntEffCcd": 160,
           "storPcntEffOvflg": null,
-          "obsTime": "2026/08/26 20:40",
+          "obsTime": "2026/08/26 21:10",
           "damdschLvl": null,
           "damdschFgrNm": null
         },
         "min10Values": [
+          {
+            "obsTime": "2026/08/26 21:10",
+            "storLvl": 881.64,
+            "storLvlCcd": 0,
+            "storCap": 73119,
+            "storCapCcd": 0,
+            "storFcntIrr": 0,
+            "storFcntIrrCcd": 160,
+            "storPcntIrr": 98.2,
+            "storPcntIrrCcd": 0,
+            "storPcntEff": 0,
+            "storPcntEffCcd": 160,
+            "allSink": 0.75,
+            "allSinkCcd": 0,
+            "allDisch": 9.85,
+            "allDischCcd": 0
+          },
+          {
+            "obsTime": "2026/08/26 21:00",
+            "storLvl": 881.64,
+            "storLvlCcd": 0,
+            "storCap": 73119,
+            "storCapCcd": 0,
+            "storFcntIrr": 0,
+            "storFcntIrrCcd": 160,
+            "storPcntIrr": 98.2,
+            "storPcntIrrCcd": 0,
+            "storPcntEff": 0,
+            "storPcntEffCcd": 160,
+            "allSink": 0.75,
+            "allSinkCcd": 0,
+            "allDisch": 9.85,
+            "allDischCcd": 0
+          },
+          {
+            "obsTime": "2026/08/26 20:50",
+            "storLvl": 881.64,
+            "storLvlCcd": 0,
+            "storCap": 73119,
+            "storCapCcd": 0,
+            "storFcntIrr": 0,
+            "storFcntIrrCcd": 160,
+            "storPcntIrr": 98.2,
+            "storPcntIrrCcd": 0,
+            "storPcntEff": 0,
+            "storPcntEffCcd": 160,
+            "allSink": 0.75,
+            "allSinkCcd": 0,
+            "allDisch": 9.85,
+            "allDischCcd": 0
+          },
           {
             "obsTime": "2026/08/26 20:40",
             "storLvl": 881.64,
@@ -4220,57 +4271,6 @@
             "allSinkCcd": 0,
             "allDisch": 0,
             "allDischCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:50",
-            "storLvl": 881.71,
-            "storLvlCcd": 0,
-            "storCap": 73241,
-            "storCapCcd": 0,
-            "storFcntIrr": 0,
-            "storFcntIrrCcd": 160,
-            "storPcntIrr": 98.4,
-            "storPcntIrrCcd": 0,
-            "storPcntEff": 0,
-            "storPcntEffCcd": 160,
-            "allSink": 1.46,
-            "allSinkCcd": 0,
-            "allDisch": 0,
-            "allDischCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:40",
-            "storLvl": 881.71,
-            "storLvlCcd": 0,
-            "storCap": 73241,
-            "storCapCcd": 0,
-            "storFcntIrr": 0,
-            "storFcntIrrCcd": 160,
-            "storPcntIrr": 98.4,
-            "storPcntIrrCcd": 0,
-            "storPcntEff": 0,
-            "storPcntEffCcd": 160,
-            "allSink": 1.46,
-            "allSinkCcd": 0,
-            "allDisch": 0,
-            "allDischCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:30",
-            "storLvl": 881.71,
-            "storLvlCcd": 0,
-            "storCap": 73241,
-            "storCapCcd": 0,
-            "storFcntIrr": 0,
-            "storFcntIrrCcd": 160,
-            "storPcntIrr": 98.4,
-            "storPcntIrrCcd": 0,
-            "storPcntEff": 0,
-            "storPcntEffCcd": 160,
-            "allSink": 1.46,
-            "allSinkCcd": 0,
-            "allDisch": 0,
-            "allDischCcd": 0
           }
         ]
       },
@@ -4280,19 +4280,19 @@
         "keyCd": "2128900700001",
         "isMain": false,
         "current": {
-          "storLvl": 847.89,
+          "storLvl": 847.9,
           "storLvlCcd": 0,
           "storLvlOvflg": 0,
-          "storCap": 105713,
+          "storCap": 105745,
           "storCapCcd": 0,
           "storCapOvflg": null,
           "storFcntIrr": 0,
           "storFcntIrrCcd": 160,
           "storFcntIrrOvflg": null,
-          "storPcntIrr": 91.5,
+          "storPcntIrr": 91.6,
           "storPcntIrrCcd": 0,
           "storPcntIrrOvflg": null,
-          "allSink": 3.21,
+          "allSink": 7.52,
           "allSinkCcd": 0,
           "allSinkOvflg": 0,
           "allDisch": 0,
@@ -4301,11 +4301,62 @@
           "storPcntEff": 0,
           "storPcntEffCcd": 160,
           "storPcntEffOvflg": null,
-          "obsTime": "2026/08/26 20:40",
+          "obsTime": "2026/08/26 21:10",
           "damdschLvl": null,
           "damdschFgrNm": null
         },
         "min10Values": [
+          {
+            "obsTime": "2026/08/26 21:10",
+            "storLvl": 847.9,
+            "storLvlCcd": 0,
+            "storCap": 105745,
+            "storCapCcd": 0,
+            "storFcntIrr": 0,
+            "storFcntIrrCcd": 160,
+            "storPcntIrr": 91.6,
+            "storPcntIrrCcd": 0,
+            "storPcntEff": 0,
+            "storPcntEffCcd": 160,
+            "allSink": 7.52,
+            "allSinkCcd": 0,
+            "allDisch": 0,
+            "allDischCcd": 0
+          },
+          {
+            "obsTime": "2026/08/26 21:00",
+            "storLvl": 847.89,
+            "storLvlCcd": 0,
+            "storCap": 105700,
+            "storCapCcd": 0,
+            "storFcntIrr": 0,
+            "storFcntIrrCcd": 160,
+            "storPcntIrr": 91.5,
+            "storPcntIrrCcd": 0,
+            "storPcntEff": 0,
+            "storPcntEffCcd": 160,
+            "allSink": 2.77,
+            "allSinkCcd": 0,
+            "allDisch": 0,
+            "allDischCcd": 0
+          },
+          {
+            "obsTime": "2026/08/26 20:50",
+            "storLvl": 847.88,
+            "storLvlCcd": 0,
+            "storCap": 105688,
+            "storCapCcd": 0,
+            "storFcntIrr": 0,
+            "storFcntIrrCcd": 160,
+            "storPcntIrr": 91.5,
+            "storPcntIrrCcd": 0,
+            "storPcntEff": 0,
+            "storPcntEffCcd": 160,
+            "allSink": 3.3,
+            "allSinkCcd": 0,
+            "allDisch": 0,
+            "allDischCcd": 0
+          },
           {
             "obsTime": "2026/08/26 20:40",
             "storLvl": 847.89,
@@ -5104,57 +5155,6 @@
             "allSinkCcd": 0,
             "allDisch": 0,
             "allDischCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:50",
-            "storLvl": 847.92,
-            "storLvlCcd": 0,
-            "storCap": 105859,
-            "storCapCcd": 0,
-            "storFcntIrr": 0,
-            "storFcntIrrCcd": 160,
-            "storPcntIrr": 91.7,
-            "storPcntIrrCcd": 0,
-            "storPcntEff": 0,
-            "storPcntEffCcd": 160,
-            "allSink": 0,
-            "allSinkCcd": 0,
-            "allDisch": 0,
-            "allDischCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:40",
-            "storLvl": 847.93,
-            "storLvlCcd": 0,
-            "storCap": 105871,
-            "storCapCcd": 0,
-            "storFcntIrr": 0,
-            "storFcntIrrCcd": 160,
-            "storPcntIrr": 91.7,
-            "storPcntIrrCcd": 0,
-            "storPcntEff": 0,
-            "storPcntEffCcd": 160,
-            "allSink": 0,
-            "allSinkCcd": 0,
-            "allDisch": 0,
-            "allDischCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:30",
-            "storLvl": 847.93,
-            "storLvlCcd": 0,
-            "storCap": 105883,
-            "storCapCcd": 0,
-            "storFcntIrr": 0,
-            "storFcntIrrCcd": 160,
-            "storPcntIrr": 91.7,
-            "storPcntIrrCcd": 0,
-            "storPcntEff": 0,
-            "storPcntEffCcd": 160,
-            "allSink": 3.76,
-            "allSinkCcd": 0,
-            "allDisch": 0,
-            "allDischCcd": 0
           }
         ]
       },
@@ -5176,7 +5176,7 @@
           "storPcntIrr": 94.4,
           "storPcntIrrCcd": 0,
           "storPcntIrrOvflg": null,
-          "allSink": 4.12,
+          "allSink": 2.2,
           "allSinkCcd": 0,
           "allSinkOvflg": 0,
           "allDisch": 0.29,
@@ -5185,11 +5185,62 @@
           "storPcntEff": 49.9,
           "storPcntEffCcd": 0,
           "storPcntEffOvflg": null,
-          "obsTime": "2026/08/26 20:40",
+          "obsTime": "2026/08/26 21:10",
           "damdschLvl": null,
           "damdschFgrNm": null
         },
         "min10Values": [
+          {
+            "obsTime": "2026/08/26 21:10",
+            "storLvl": 552.65,
+            "storLvlCcd": 0,
+            "storCap": 9982,
+            "storCapCcd": 0,
+            "storFcntIrr": 0,
+            "storFcntIrrCcd": 160,
+            "storPcntIrr": 94.4,
+            "storPcntIrrCcd": 0,
+            "storPcntEff": 49.9,
+            "storPcntEffCcd": 0,
+            "allSink": 2.2,
+            "allSinkCcd": 0,
+            "allDisch": 0.29,
+            "allDischCcd": 0
+          },
+          {
+            "obsTime": "2026/08/26 21:00",
+            "storLvl": 552.65,
+            "storLvlCcd": 0,
+            "storCap": 9982,
+            "storCapCcd": 0,
+            "storFcntIrr": 0,
+            "storFcntIrrCcd": 160,
+            "storPcntIrr": 94.4,
+            "storPcntIrrCcd": 0,
+            "storPcntEff": 49.9,
+            "storPcntEffCcd": 0,
+            "allSink": 2.2,
+            "allSinkCcd": 0,
+            "allDisch": 0.29,
+            "allDischCcd": 0
+          },
+          {
+            "obsTime": "2026/08/26 20:50",
+            "storLvl": 552.65,
+            "storLvlCcd": 0,
+            "storCap": 9982,
+            "storCapCcd": 0,
+            "storFcntIrr": 0,
+            "storFcntIrrCcd": 160,
+            "storPcntIrr": 94.4,
+            "storPcntIrrCcd": 0,
+            "storPcntEff": 49.9,
+            "storPcntEffCcd": 0,
+            "allSink": 4.12,
+            "allSinkCcd": 0,
+            "allDisch": 0.29,
+            "allDischCcd": 0
+          },
           {
             "obsTime": "2026/08/26 20:40",
             "storLvl": 552.65,
@@ -5988,57 +6039,6 @@
             "allSinkCcd": 0,
             "allDisch": 4.37,
             "allDischCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:50",
-            "storLvl": 552.67,
-            "storLvlCcd": 0,
-            "storCap": 9996,
-            "storCapCcd": 0,
-            "storFcntIrr": 0,
-            "storFcntIrrCcd": 160,
-            "storPcntIrr": 94.5,
-            "storPcntIrrCcd": 0,
-            "storPcntEff": 49.9,
-            "storPcntEffCcd": 0,
-            "allSink": 2.46,
-            "allSinkCcd": 0,
-            "allDisch": 4.37,
-            "allDischCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:40",
-            "storLvl": 552.67,
-            "storLvlCcd": 0,
-            "storCap": 9996,
-            "storCapCcd": 0,
-            "storFcntIrr": 0,
-            "storFcntIrrCcd": 160,
-            "storPcntIrr": 94.5,
-            "storPcntIrrCcd": 0,
-            "storPcntEff": 49.9,
-            "storPcntEffCcd": 0,
-            "allSink": 2.46,
-            "allSinkCcd": 0,
-            "allDisch": 4.37,
-            "allDischCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:30",
-            "storLvl": 552.67,
-            "storLvlCcd": 0,
-            "storCap": 9996,
-            "storCapCcd": 0,
-            "storFcntIrr": 0,
-            "storFcntIrrCcd": 160,
-            "storPcntIrr": 94.5,
-            "storPcntIrrCcd": 0,
-            "storPcntEff": 49.9,
-            "storPcntEffCcd": 0,
-            "allSink": 2.46,
-            "allSinkCcd": 0,
-            "allDisch": 4.37,
-            "allDischCcd": 0
           }
         ]
       }
@@ -6053,7 +6053,7 @@
           "rn10mCcd": 0,
           "rn10mCautOvflg": 0,
           "rn10mWarnOvflg": 0,
-          "rnHr": 0,
+          "rnHr": 12,
           "rnHrCcd": 0,
           "rnHrCautOvflg": 0,
           "rnHrWarnOvflg": 0,
@@ -6061,17 +6061,38 @@
           "rnIncCcd": 0,
           "rnIncCautOvflg": 0,
           "rnIncWarnOvflg": 0,
-          "rn60m": 12,
+          "rn60m": 0,
           "rn60mCcd": 0,
           "rn60mCautOvflg": 0,
           "rn60mWarnOvflg": 0,
-          "rnHr10m": 0,
+          "rnHr10m": 12,
           "rnHr10mCcd": 0,
           "rnHr10mCautOvflg": 0,
           "rnHr10mWarnOvflg": 0,
-          "obsTime": "2026/08/26 20:40"
+          "obsTime": "2026/08/26 21:10"
         },
         "min10Values": [
+          {
+            "obsTime": "2026/08/26 21:10",
+            "rn10m": 0,
+            "rn10mCcd": 0,
+            "rnInc": 12,
+            "rnIncCcd": 0
+          },
+          {
+            "obsTime": "2026/08/26 21:00",
+            "rn10m": 0,
+            "rn10mCcd": 0,
+            "rnInc": 12,
+            "rnIncCcd": 0
+          },
+          {
+            "obsTime": "2026/08/26 20:50",
+            "rn10m": 0,
+            "rn10mCcd": 0,
+            "rnInc": 12,
+            "rnIncCcd": 0
+          },
           {
             "obsTime": "2026/08/26 20:40",
             "rn10m": 0,
@@ -6400,27 +6421,6 @@
             "rn10mCcd": 0,
             "rnInc": 0,
             "rnIncCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:50",
-            "rn10m": 0,
-            "rn10mCcd": 0,
-            "rnInc": 0,
-            "rnIncCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:40",
-            "rn10m": 0,
-            "rn10mCcd": 0,
-            "rnInc": 0,
-            "rnIncCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:30",
-            "rn10m": 0,
-            "rn10mCcd": 0,
-            "rnInc": 0,
-            "rnIncCcd": 0
           }
         ]
       },
@@ -6433,7 +6433,7 @@
           "rn10mCcd": 0,
           "rn10mCautOvflg": 0,
           "rn10mWarnOvflg": 0,
-          "rnHr": 0,
+          "rnHr": 6,
           "rnHrCcd": 0,
           "rnHrCautOvflg": 0,
           "rnHrWarnOvflg": 0,
@@ -6445,13 +6445,34 @@
           "rn60mCcd": 0,
           "rn60mCautOvflg": 0,
           "rn60mWarnOvflg": 0,
-          "rnHr10m": 0,
+          "rnHr10m": 6,
           "rnHr10mCcd": 0,
           "rnHr10mCautOvflg": 0,
           "rnHr10mWarnOvflg": 0,
-          "obsTime": "2026/08/26 20:40"
+          "obsTime": "2026/08/26 21:10"
         },
         "min10Values": [
+          {
+            "obsTime": "2026/08/26 21:10",
+            "rn10m": 0,
+            "rn10mCcd": 0,
+            "rnInc": 6,
+            "rnIncCcd": 0
+          },
+          {
+            "obsTime": "2026/08/26 21:00",
+            "rn10m": 0,
+            "rn10mCcd": 0,
+            "rnInc": 6,
+            "rnIncCcd": 0
+          },
+          {
+            "obsTime": "2026/08/26 20:50",
+            "rn10m": 0,
+            "rn10mCcd": 0,
+            "rnInc": 6,
+            "rnIncCcd": 0
+          },
           {
             "obsTime": "2026/08/26 20:40",
             "rn10m": 0,
@@ -6780,27 +6801,6 @@
             "rn10mCcd": 0,
             "rnInc": 0,
             "rnIncCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:50",
-            "rn10m": 0,
-            "rn10mCcd": 0,
-            "rnInc": 0,
-            "rnIncCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:40",
-            "rn10m": 0,
-            "rn10mCcd": 0,
-            "rnInc": 0,
-            "rnIncCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:30",
-            "rn10m": 0,
-            "rn10mCcd": 0,
-            "rnInc": 0,
-            "rnIncCcd": 0
           }
         ]
       },
@@ -6813,7 +6813,7 @@
           "rn10mCcd": 0,
           "rn10mCautOvflg": 0,
           "rn10mWarnOvflg": 0,
-          "rnHr": 4,
+          "rnHr": 0,
           "rnHrCcd": 0,
           "rnHrCautOvflg": 0,
           "rnHrWarnOvflg": 0,
@@ -6821,17 +6821,38 @@
           "rnIncCcd": 0,
           "rnIncCautOvflg": 0,
           "rnIncWarnOvflg": 0,
-          "rn60m": 4,
+          "rn60m": 0,
           "rn60mCcd": 0,
           "rn60mCautOvflg": 0,
           "rn60mWarnOvflg": 0,
-          "rnHr10m": 4,
+          "rnHr10m": 0,
           "rnHr10mCcd": 0,
           "rnHr10mCautOvflg": 0,
           "rnHr10mWarnOvflg": 0,
-          "obsTime": "2026/08/26 20:40"
+          "obsTime": "2026/08/26 21:10"
         },
         "min10Values": [
+          {
+            "obsTime": "2026/08/26 21:10",
+            "rn10m": 0,
+            "rn10mCcd": 0,
+            "rnInc": 4,
+            "rnIncCcd": 0
+          },
+          {
+            "obsTime": "2026/08/26 21:00",
+            "rn10m": 0,
+            "rn10mCcd": 0,
+            "rnInc": 4,
+            "rnIncCcd": 0
+          },
+          {
+            "obsTime": "2026/08/26 20:50",
+            "rn10m": 0,
+            "rn10mCcd": 0,
+            "rnInc": 4,
+            "rnIncCcd": 0
+          },
           {
             "obsTime": "2026/08/26 20:40",
             "rn10m": 0,
@@ -7160,33 +7181,48 @@
             "rn10mCcd": 0,
             "rnInc": 0,
             "rnIncCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:50",
-            "rn10m": 0,
-            "rn10mCcd": 0,
-            "rnInc": 0,
-            "rnIncCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:40",
-            "rn10m": 0,
-            "rn10mCcd": 0,
-            "rnInc": 0,
-            "rnIncCcd": 0
-          },
-          {
-            "obsTime": "2026/08/26 12:30",
-            "rn10m": 0,
-            "rn10mCcd": 0,
-            "rnInc": 0,
-            "rnIncCcd": 0
           }
         ]
       }
     }
   },
   "main_combined_timeline": [
+    {
+      "obsTime": "2026/08/26 21:10",
+      "stg": 2.23,
+      "stg10mChg": 0,
+      "stgHght": 461.377,
+      "damDischarge": 20.38,
+      "damInflow": 61.68,
+      "damStorageRate": 100,
+      "damStorageLvl": 637.73,
+      "rain10m": 0,
+      "rainInc": 12
+    },
+    {
+      "obsTime": "2026/08/26 21:00",
+      "stg": 2.23,
+      "stg10mChg": -0.01,
+      "stgHght": 461.377,
+      "damDischarge": 20.38,
+      "damInflow": 91.66,
+      "damStorageRate": 100,
+      "damStorageLvl": 637.73,
+      "rain10m": 0,
+      "rainInc": 12
+    },
+    {
+      "obsTime": "2026/08/26 20:50",
+      "stg": 2.24,
+      "stg10mChg": -0.01,
+      "stgHght": 461.387,
+      "damDischarge": 20.38,
+      "damInflow": 108.07,
+      "damStorageRate": 100,
+      "damStorageLvl": 637.72,
+      "rain10m": 0,
+      "rainInc": 12
+    },
     {
       "obsTime": "2026/08/26 20:40",
       "stg": 2.25,
@@ -7750,48 +7786,12 @@
       "damStorageLvl": 637.39,
       "rain10m": 0,
       "rainInc": 0
-    },
-    {
-      "obsTime": "2026/08/26 12:50",
-      "stg": 2.2,
-      "stg10mChg": 0,
-      "stgHght": 461.347,
-      "damDischarge": 19.71,
-      "damInflow": 20.25,
-      "damStorageRate": 100,
-      "damStorageLvl": 637.39,
-      "rain10m": 0,
-      "rainInc": 0
-    },
-    {
-      "obsTime": "2026/08/26 12:40",
-      "stg": 2.2,
-      "stg10mChg": 0,
-      "stgHght": 461.347,
-      "damDischarge": 20.32,
-      "damInflow": 20.27,
-      "damStorageRate": 100,
-      "damStorageLvl": 637.39,
-      "rain10m": 0,
-      "rainInc": 0
-    },
-    {
-      "obsTime": "2026/08/26 12:30",
-      "stg": 2.2,
-      "stg10mChg": 0,
-      "stgHght": 461.347,
-      "damDischarge": 20.32,
-      "damInflow": 20.79,
-      "damStorageRate": 100,
-      "damStorageLvl": 637.39,
-      "rain10m": 0,
-      "rainInc": 0
     }
   ],
   "weather": {
     "latitude": 36.75,
     "longitude": 139.0,
-    "generationtime_ms": 0.30219554901123047,
+    "generationtime_ms": 0.24616718292236328,
     "utc_offset_seconds": 32400,
     "timezone": "Asia/Tokyo",
     "timezone_abbreviation": "GMT+9",
@@ -7807,14 +7807,14 @@
       "wind_speed_10m": "km/h"
     },
     "current": {
-      "time": "2026-08-26T20:45",
+      "time": "2026-08-26T21:15",
       "interval": 900,
-      "temperature_2m": 24.8,
-      "relative_humidity_2m": 92,
-      "apparent_temperature": 29.8,
-      "precipitation": 0.0,
-      "weather_code": 3,
-      "wind_speed_10m": 4.7
+      "temperature_2m": 24.6,
+      "relative_humidity_2m": 93,
+      "apparent_temperature": 29.7,
+      "precipitation": 0.2,
+      "weather_code": 53,
+      "wind_speed_10m": 4.0
     },
     "hourly_units": {
       "time": "iso8601",
