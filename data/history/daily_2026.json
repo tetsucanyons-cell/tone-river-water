@@ -1,6 +1,6 @@
 {
   "year": "2026",
-  "updated_at": "2026-10-17 05:59:57",
+  "updated_at": "2026-10-17 08:19:15",
   "total_days": 59,
   "daily_data": [
     {
@@ -919,17 +919,17 @@
       "date": "2026/10/17",
       "yubara_max": 2.24,
       "yubara_min": 2.23,
-      "yubara_avg": 2.23,
+      "yubara_avg": 2.24,
       "fujiwara_disch_max": 1.09,
       "fujiwara_disch_avg": 1.09,
-      "fujiwara_inflow_avg": 1.65,
+      "fujiwara_inflow_avg": 1.49,
       "fujiwara_stor_rate": 60.4,
-      "fujiwara_stor_cap": 18721.0,
+      "fujiwara_stor_cap": 18716.0,
       "naramata_stor_rate": 85.4,
-      "yagisawa_stor_rate": 92.1,
+      "yagisawa_stor_rate": 92.2,
       "aimata_stor_rate": 0.0,
       "rain_total": 0.0,
-      "sample_count": 36
+      "sample_count": 50
     },
     {
       "date": ">>>>>>> 5f",
