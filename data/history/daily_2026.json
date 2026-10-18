@@ -1,6 +1,6 @@
 {
   "year": "2026",
-  "updated_at": "2026-10-19 01:39:26",
+  "updated_at": "2026-10-19 03:54:13",
   "total_days": 61,
   "daily_data": [
     {
@@ -951,7 +951,7 @@
       "date": "2026/10/19",
       "yubara_max": 2.21,
       "yubara_min": 2.2,
-      "yubara_avg": 2.21,
+      "yubara_avg": 2.2,
       "fujiwara_disch_max": 1.09,
       "fujiwara_disch_avg": 1.09,
       "fujiwara_inflow_avg": 1.09,
@@ -961,7 +961,7 @@
       "yagisawa_stor_rate": 92.9,
       "aimata_stor_rate": 0.0,
       "rain_total": 0.0,
-      "sample_count": 10
+      "sample_count": 24
     },
     {
       "date": ">>>>>>> 5f",
