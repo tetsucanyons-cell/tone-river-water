@@ -1,7 +1,7 @@
 {
   "year": "2026",
-  "updated_at": "2026-11-19 16:28:58",
-  "total_days": 92,
+  "updated_at": "2026-11-20 01:42:38",
+  "total_days": 93,
   "daily_data": [
     {
       "date": "2026/08/21",
@@ -1447,17 +1447,33 @@
       "date": "2026/11/19",
       "yubara_max": 2.7,
       "yubara_min": 2.51,
-      "yubara_avg": 2.6,
-      "fujiwara_disch_max": 21.25,
-      "fujiwara_disch_avg": 20.89,
-      "fujiwara_inflow_avg": 23.44,
-      "fujiwara_stor_rate": 92.8,
-      "fujiwara_stor_cap": 28784.0,
-      "naramata_stor_rate": 97.0,
-      "yagisawa_stor_rate": 98.9,
-      "aimata_stor_rate": 42.0,
+      "yubara_avg": 2.59,
+      "fujiwara_disch_max": 21.95,
+      "fujiwara_disch_avg": 20.94,
+      "fujiwara_inflow_avg": 26.5,
+      "fujiwara_stor_rate": 93.4,
+      "fujiwara_stor_cap": 28957.0,
+      "naramata_stor_rate": 97.1,
+      "yagisawa_stor_rate": 98.8,
+      "aimata_stor_rate": 41.3,
       "rain_total": 0.0,
-      "sample_count": 99
+      "sample_count": 138
+    },
+    {
+      "date": "2026/11/20",
+      "yubara_max": 2.53,
+      "yubara_min": 2.51,
+      "yubara_avg": 2.52,
+      "fujiwara_disch_max": 21.91,
+      "fujiwara_disch_avg": 20.01,
+      "fujiwara_inflow_avg": 25.6,
+      "fujiwara_stor_rate": 93.5,
+      "fujiwara_stor_cap": 28991.0,
+      "naramata_stor_rate": 97.2,
+      "yagisawa_stor_rate": 98.7,
+      "aimata_stor_rate": 41.1,
+      "rain_total": 0.0,
+      "sample_count": 11
     },
     {
       "date": ">>>>>>> 5f",
